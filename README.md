@@ -3,7 +3,7 @@
 [![Docker Stars](https://img.shields.io/docker/stars/jfloff/alpine-python.svg)][hub]
 [![Docker Pulls](https://img.shields.io/docker/pulls/jfloff/alpine-python.svg)][hub]
 
-A small Python Docker image based on [Alpine Linux][alpine]. The image is only 230 MB and it includes `python3-dev`.
+A small Python Docker image based on [Alpine Linux][http://alpinelinux.org/]. The image is only 230 MB and it includes `python3-dev`.
 
 ## Why?
 
