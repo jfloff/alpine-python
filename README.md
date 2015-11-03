@@ -3,11 +3,13 @@
 [![Docker Stars](https://img.shields.io/docker/stars/jfloff/alpine-python.svg)][hub]
 [![Docker Pulls](https://img.shields.io/docker/pulls/jfloff/alpine-python.svg)][hub]
 
-A small Python Docker image based on [Alpine Linux][http://alpinelinux.org/]. The image is only 230 MB and it includes `python3-dev`.
+[hub]: https://hub.docker.com/r/jfloff/alpine-python/
+
+A small Python Docker image based on [Alpine Linux](http://alpinelinux.org/). The image is only 230 MB and it includes `python3-dev`.
 
 ## Why?
 
-The default docker python images are too big (https://github.com/docker-library/python/issues/45), much larger than they need to be. Hence I built this simple image based on [docker-alpine](https://github.com/gliderlabs/docker-alpine), that has everything needed for the most common python projects - including `python3-dev` (which is not common in most minimal alpine python packages).
+The default docker python images are too [big](https://github.com/docker-library/python/issues/45), much larger than they need to be. Hence I built this simple image based on [docker-alpine](https://github.com/gliderlabs/docker-alpine), that has everything needed for the most common python projects - including `python3-dev` (which is not common in most minimal alpine python packages).
 
 ```
 REPOSITORY                TAG           IMAGE ID          VIRTUAL SIZE
@@ -38,6 +40,7 @@ FROM jfloff/alpine-python
 EXPOSE 5000
 CMD python manage.py runserver
 ```
+
 
 This image will install form the get go the `requirements.txt` of your project. This allows you to cache your requirements right in the build.
 
