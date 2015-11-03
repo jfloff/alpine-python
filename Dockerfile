@@ -9,7 +9,7 @@ RUN apk add --update \
               build-base \
               bash \
               python3 \
-              
+              pyther3-dev \
   && rm /var/cache/apk/*
 
 # make some useful symlinks that are expected to exist
