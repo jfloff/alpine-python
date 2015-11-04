@@ -37,7 +37,7 @@ docker run --rm -ti jfloff/followme python hello.py
 
 Or extend this images using your custom `Dockerfile`, e.g:
 ```dockerfile
-FROM jfloff/alpine-python
+FROM jfloff/alpine-python:latest
 
 # for a flask server
 EXPOSE 5000
