@@ -27,14 +27,9 @@ Perhaps this could be even more smaller, but I'm not an Alpine guru. **Feel free
 
 This image will install the `requirements.txt` of your project from the get go. This allows you to cache your requirements right in the build. _Make sure you are in the same directory of your `requirements.txt` file_.
 
-To build Docker image:
-```shell
-docker build --rm=true -t jfloff/alpine-python .
-```
-
 This image runs `python` command on `docker run`. You can either specify your own command, e.g:
 ```shell
-docker run --rm -ti jfloff/followme python hello.py
+docker run --rm -ti jfloff/alpine-python python hello.py
 ```
 
 Or extend this images using your custom `Dockerfile`, e.g:
@@ -46,9 +41,15 @@ EXPOSE 5000
 CMD python manage.py runserver
 ```
 
+Dont' forget to build _your_ image:
+```shell
+docker build --rm=true -t jfloff/app .
+```
+
+
 You can also access `bash` inside the container:
 ```shell
-docker run --rm -ti jfloff/followme /bin/bash
+docker run --rm -ti jfloff/alpine-python /bin/bash
 ```
 
 Personally, I build an extended `Dockerfile` version (like shown above), and mount my specific application inside the container:
