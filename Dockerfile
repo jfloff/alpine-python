@@ -1,15 +1,16 @@
 FROM alpine:latest
 
 # Install needed packages. Notes:
-#   * python3-dev, libevent-dev: are used for gevent
-#   * build-base: used so we include the basic development packages
+#   * build-base: used so we include the basic development packages (gcc)
+#   * python3-dev: are used for gevent e.g.
 #   * bash: so we can access /bin/bash
 RUN apk add --update \
               musl \
               build-base \
-              bash \
               python3 \
-              pyther3-dev \
+              python3-dev \
+              bash \
+  && pip3.4 install --upgrade pip \
   && rm /var/cache/apk/*
 
 # make some useful symlinks that are expected to exist
@@ -20,9 +21,6 @@ RUN cd /usr/bin \
   && ln -sf python3.4 python \
   && ln -sf python-config3.4 python-config \
   && ln -sf pip3.4 pip
-
-# upgrade pip
-RUN pip install --upgrade pip
 
 # install requirements
 # this way when you build you won't need to install again
