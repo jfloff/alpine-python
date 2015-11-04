@@ -25,8 +25,8 @@ RUN cd /usr/bin \
 # install requirements
 # this way when you build you won't need to install again
 # ans since COPY is cached we don't need to wait
-COPY ./requirements.txt /tmp/requirements.txt
-RUN pip install -r /tmp/requirements.txt
+ONBUILD COPY ./requirements.txt /tmp/requirements.txt
+ONBUILD RUN pip install -r /tmp/requirements.txt
 
 # since we will be "always" mounting the volume, we can set this up
 CMD python
