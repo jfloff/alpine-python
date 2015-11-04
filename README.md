@@ -25,6 +25,8 @@ Perhaps this could be even more smaller, but I'm not an Alpine guru. **Feel free
 
 ## Usage
 
+This image will install the `requirements.txt` of your project from the get go. This allows you to cache your requirements right in the build. _Make sure you are in the same directory of your `requirements.txt` file_.
+
 To build Docker image:
 ```shell
 docker build --rm=true -t jfloff/alpine-python .
@@ -43,9 +45,6 @@ FROM jfloff/alpine-python:latest
 EXPOSE 5000
 CMD python manage.py runserver
 ```
-
-
-This image will install form the get go the `requirements.txt` of your project. This allows you to cache your requirements right in the build.
 
 You can also access `bash` inside the container:
 ```shell
