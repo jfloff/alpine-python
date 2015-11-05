@@ -10,6 +10,7 @@ RUN apk add --update \
               python3 \
               python3-dev \
               bash \
+              git \
   && pip3.4 install --upgrade pip \
   && rm /var/cache/apk/*
 
