@@ -1,10 +1,12 @@
 FROM alpine:latest
 
+# Adds testing package to repositories
 # Install needed packages. Notes:
 #   * build-base: used so we include the basic development packages (gcc)
-#   * python3-dev: are used for gevent e.g.
+#   * python-dev: are used for gevent e.g.
 #   * bash: so we can access /bin/bash
-RUN apk add --update \
+RUN echo "@testing http://dl-4.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories \
+  && apk add --update \
               musl \
               build-base \
               python3 \

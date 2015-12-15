@@ -8,12 +8,13 @@
 
 A small Python Docker image based on [Alpine Linux](http://alpinelinux.org/). The image is only 225 MB and it includes `python3-dev`.
 
+
 ## Supported tags
 * **2.7 ([Dockerfile](https://github.com/jfloff/alpine-python/blob/master/3.4/Dockerfile))**
 * **3.4 ([Dockerfile](https://github.com/jfloff/alpine-python/blob/master/2.7/Dockerfile))**
 
-## Why?
 
+## Why?
 The default docker python images are too [big](https://github.com/docker-library/python/issues/45), much larger than they need to be. Hence I built this simple image based on [docker-alpine](https://github.com/gliderlabs/docker-alpine), that has everything needed for the most common python projects - including `python3-dev` (which is not common in most minimal alpine python packages).
 
 ```
@@ -27,8 +28,8 @@ We actually get the same size as `python:3.4-slim` *but* with `python3-dev` inst
 
 Perhaps this could be even more smaller, but I'm not an Alpine guru. **Feel free to post a PR.**
 
-## Usage
 
+## Usage
 This image will install the `requirements.txt` of your project from the get go. This allows you to cache your requirements right in the build. _Make sure you are in the same directory of your `requirements.txt` file_.
 
 This image runs `python` command on `docker run`. You can either specify your own command, e.g:
@@ -50,7 +51,6 @@ Dont' forget to build _your_ image:
 docker build --rm=true -t jfloff/app .
 ```
 
-
 You can also access `bash` inside the container:
 ```shell
 docker run --rm -ti jfloff/alpine-python /bin/bash
@@ -61,11 +61,13 @@ Personally, I build an extended `Dockerfile` version (like shown above), and mou
 docker run --rm -v "$(pwd)":/home/app -w /home/app -p 5000:5000 -ti jfloff/app
 ```
 
+
 ## Details
 * Installs `python-dev` allowing the use of more advanced packages such as `gevent`
 * Installs `bash` allowing interaction with the container
 * Just like the main `python` docker image, it creates useful symlinks that are expected to exist, e.g. `python3.4` > `python`, `pip2.7` > `pip`, etc.)
+* Added `testing` repository to Alpine's `repositories` file
+
 
 ## License
-
 The code in this repository, unless otherwise noted, is MIT licensed. See the `LICENSE` file in this repository.
