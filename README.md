@@ -66,7 +66,7 @@ docker run --rm -v "$(pwd)":/home/app -w /home/app -p 5000:5000 -ti jfloff/app
 * Installs `python-dev` allowing the use of more advanced packages such as `gevent`
 * Installs `bash` allowing interaction with the container
 * Just like the main `python` docker image, it creates useful symlinks that are expected to exist, e.g. `python3.4` > `python`, `pip2.7` > `pip`, etc.)
-* Added `testing` repository to Alpine's `repositories` file
+* Added `testing` repository to Alpine's `/etc/apk/repositories` file
 
 
 ## License
