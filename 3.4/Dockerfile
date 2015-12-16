@@ -25,11 +25,5 @@ RUN cd /usr/bin \
   && ln -sf python-config3.4 python-config \
   && ln -sf pip3.4 pip
 
-# install requirements
-# this way when you build you won't need to install again
-# ans since COPY is cached we don't need to wait
-ONBUILD COPY ./requirements.txt /tmp/requirements.txt
-ONBUILD RUN pip install -r /tmp/requirements.txt
-
 # since we will be "always" mounting the volume, we can set this up
 CMD python
