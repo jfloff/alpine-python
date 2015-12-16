@@ -15,6 +15,7 @@ A small Python Docker image based on [Alpine Linux](http://alpinelinux.org/). Th
 * **3.4 ([Dockerfile](https://github.com/jfloff/alpine-python/blob/master/3.4/Dockerfile))**
 * **3.4-onbuild ([Dockerfile](https://github.com/jfloff/alpine-python/blob/master/3.4/onbuild/Dockerfile))**
 
+**NOTE:** `onbuild` images install the `requirements.txt` of your project from the get go. This allows you to cache your requirements right in the build. _Make sure you are in the same directory of your `requirements.txt` file_.
 
 ## Why?
 The default docker python images are too [big](https://github.com/docker-library/python/issues/45), much larger than they need to be. Hence I built this simple image based on [docker-alpine](https://github.com/gliderlabs/docker-alpine), that has everything needed for the most common python projects - including `python3-dev` (which is not common in most minimal alpine python packages).
@@ -32,8 +33,6 @@ Perhaps this could be even more smaller, but I'm not an Alpine guru. **Feel free
 
 
 ## Usage
-This image will install the `requirements.txt` of your project from the get go. This allows you to cache your requirements right in the build. _Make sure you are in the same directory of your `requirements.txt` file_.
-
 This image runs `python` command on `docker run`. You can either specify your own command, e.g:
 ```shell
 docker run --rm -ti jfloff/alpine-python python hello.py
@@ -41,7 +40,7 @@ docker run --rm -ti jfloff/alpine-python python hello.py
 
 Or extend this images using your custom `Dockerfile`, e.g:
 ```dockerfile
-FROM jfloff/alpine-python:3.4
+FROM jfloff/alpine-python:3.4-onbuild
 
 # for a flask server
 EXPOSE 5000
@@ -62,7 +61,6 @@ Personally, I build an extended `Dockerfile` version (like shown above), and mou
 ```shell
 docker run --rm -v "$(pwd)":/home/app -w /home/app -p 5000:5000 -ti jfloff/app
 ```
-
 
 ## Details
 * Installs `python-dev` allowing the use of more advanced packages such as `gevent`
