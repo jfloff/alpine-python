@@ -37,17 +37,16 @@ The default docker python images are too [big](https://github.com/docker-library
 
 ```
 REPOSITORY                TAG           VIRTUAL SIZE
-jfloff/alpine-python      3.4           225.7 MB
-python                    3.4           685.5 MB
-python                    3.4-slim      215.1 MB
+jfloff/alpine-python      3.4           102.7 MB
+jfloff/alpine-python      2.7           52.17 MB
+python                    3.4           681.4 MB
+python                    3.4-slim      196 MB
 ```
-
-We actually get the same size as `python:3.4-slim` *but* with `python3-dev` installed (that's around 55MB).
 
 Perhaps this could be even more smaller, but I'm not an Alpine guru. **Feel free to post a PR.**
 
 ## Details
-* Installs `python-dev` allowing the use of more advanced packages such as `gevent`
+* Installs `build-base`, `linux-headers`, and `python-dev`, allowing the use of more advanced packages such as `gevent`
 * Installs `bash` allowing interaction with the container
 * Just like the main `python` docker image, it creates useful symlinks that are expected to exist, e.g. `python3.4` > `python`, `pip2.7` > `pip`, etc.)
 * Added `testing` and `community` repositories to Alpine's `/etc/apk/repositories` file
