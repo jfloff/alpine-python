@@ -32,14 +32,14 @@ RUN echo \
     (sed -i -e 's/dl-cdn/dl-4/g' /etc/apk/repositories && apk add --no-cache $PACKAGES) \
 
 # make some useful symlinks that are expected to exist
-  && [[ ! -e /usr/bin/python ]]        && ln -sf /usr/bin/python${PYTHON_MAJOR_VERSION} /usr/bin/python \
-  && [[ ! -e /usr/bin/python-config ]] && ln -sf /usr/bin/python-config${PYTHON_MAJOR_VERSION} /usr/bin/python-config \
+  && if [[ ! -e /usr/bin/python ]]; then        ln -sf /usr/bin/python${PYTHON_MAJOR_VERSION} /usr/bin/python; fi \
+  && if [[ ! -e /usr/bin/python-config ]]; then ln -sf /usr/bin/python-config${PYTHON_MAJOR_VERSION} /usr/bin/python-config; fi \
 
-  && [[ ! -e /usr/bin/idle ]]          && ln -sf /usr/bin/idle${PYTHON_MAJOR_VERSION} /usr/bin/idle \
-  && [[ ! -e /usr/bin/pydoc ]]         && ln -sf /usr/bin/pydoc${PYTHON_MAJOR_VERSION} /usr/bin/pydoc \
+  && if [[ ! -e /usr/bin/idle ]]; then          ln -sf /usr/bin/idle${PYTHON_MAJOR_VERSION} /usr/bin/idle; fi \
+  && if [[ ! -e /usr/bin/pydoc ]]; then         ln -sf /usr/bin/pydoc${PYTHON_MAJOR_VERSION} /usr/bin/pydoc; fi \
 
-  && [[ ! -e /usr/bin/easy_install ]]  && ln -sf /usr/bin/easy_install-${PYTHON_MAJOR_VERSION}.* /usr/bin/easy_install \
-  && [[ ! -e /usr/bin/pip ]]           && ln -sf /usr/bin/pip${PYTHON_MAJOR_VERSION} /usr/bin/pip \
+  && if [[ ! -e /usr/bin/easy_install ]]; then  ln -sf /usr/bin/easy_install-${PYTHON_MAJOR_VERSION}.* /usr/bin/easy_install; fi \
+  && if [[ ! -e /usr/bin/pip ]]; then           ln -sf /usr/bin/pip${PYTHON_MAJOR_VERSION} /usr/bin/pip; fi \
 && echo
 
 # Copy in the entrypoint script -- this installs prerequisites on container start.
