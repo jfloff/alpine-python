@@ -1,28 +1,61 @@
-FROM alpine:latest
+FROM alpine:3.4
 
-# Adds testing package to repositories
-# Install needed packages. Notes:
-#   * build-base: used so we include the basic development packages (gcc)
-#   * python-dev: are used for gevent e.g.
-#   * bash: so we can access /bin/bash
-RUN echo "@testing http://dl-4.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories \
-  && apk add --update \
-              musl \
-              build-base \
-              bash \
-              git \
-              python \
-              python-dev \
-              py-pip \
-  && pip install --upgrade pip \
-  && rm /var/cache/apk/*
+ENV PYTHON_MAJOR_VERSION=2
+
+# These are always installed. Notes:
+#   * bash: For entrypoint, and debugging
+#   * dumb-init: a proper init system for containers, to reap zombie children
+#   * python: the binaries themselves
+#   * py-pip: Pip, and also setuptools.
+ENV PACKAGES="\
+  bash \
+  dumb-init \
+  python${PYTHON_MAJOR_VERSION} \
+  py-pip \
+"
+
+
+RUN echo \
+# Figure out the minor version from the binary name
+# no real need for this variable at the moment
+#  && PYTHON_MINOR_VERSION="$(find /usr/bin -type f -name python\* | sort | tail -n1 | cut -d'.' -f2 | cut -d'-' -f1)" \
+
+# Unfortunately the Alpine repositories are in a slightly inconsistent state for now-- python2 only exists in 'edge', not main.
+  && if [[ "$PYTHON_MAJOR_VERSION" == '2' ]]; then PACKAGES="$(echo $PACKAGES | sed -e 's/python2/python/g')"; fi \
+
+# Add testing and community repositories -- community is untagged as tagging it causes odd issues with the package index
+  && echo "@testing http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories \
+  && echo "http://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories \
+
+# Add the packages, with a CDN-breakage fallback if needed
+  && apk add --no-cache $PACKAGES || \
+    (sed -i -e 's/dl-cdn/dl-4/g' /etc/apk/repositories && apk add --no-cache $PACKAGES) \
 
 # make some useful symlinks that are expected to exist
-RUN cd /usr/bin \
-  && ln -sf easy_install-2.7 easy_install \
-  && ln -sf python2.7 python \
-  && ln -sf python2.7-config python-config \
-  && ln -sf pip2.7 pip
+  && [[ ! -e /usr/bin/python ]]        && ln -sf /usr/bin/python${PYTHON_MAJOR_VERSION} /usr/bin/python \
+  && [[ ! -e /usr/bin/python-config ]] && ln -sf /usr/bin/python${PYTHON_MAJOR_VERSION}*-config /usr/bin/python-config \
 
-# since we will be "always" mounting the volume, we can set this up
-CMD python
+  && [[ ! -e /usr/bin/easy_install ]]  && ln -sf /usr/bin/easy_install-${PYTHON_MAJOR_VERSION}.* /usr/bin/easy_install \
+  && [[ ! -e /usr/bin/pip ]]           && ln -sf /usr/bin/pip${PYTHON_MAJOR_VERSION} /usr/bin/pip \
+&& echo
+
+# Copy in the entrypoint script -- this installs prerequisites on container start.
+COPY entrypoint.sh /entrypoint.sh
+
+# These packages are not installed immediately, but are added at runtime or ONBUILD to shrink the image as much as possible. Notes:
+#   * build-base: used so we include the basic development packages (gcc)
+#   * linux-headers: commonly needed, and an unusual package name from Alpine.
+#   * python-dev: are used for gevent e.g.
+#   * py-pip: provides pip, not needed once the software is built
+ENV BUILD_PACKAGES="\
+  build-base \
+  linux-headers \
+  python${PYTHON_MAJOR_VERSION}-dev \
+"
+
+# This script installs APK and Pip prerequisites on container start, or ONBUILD. Notes:
+#   * Reads the -a flags and /apk-requirements.txt for install requests
+#   * Reads the -b flags and /build-requirements.txt for build packages -- removed when build is complete
+#   * Reads the -p flags and /requirements.txt for Pip packages
+#   * Reads the -r flag to specify a different file path for /requirements.txt
+ENTRYPOINT ["/usr/bin/dumb-init", "bash", "/entrypoint.sh"]
