@@ -6,9 +6,9 @@
 
 [hub]: https://hub.docker.com/r/jfloff/alpine-python/
 
-A small Python Docker image based on [Alpine Linux](http://alpinelinux.org/). The image is only 225 MB and it includes `python3-dev`.
+A small Python Docker image based on [Alpine Linux](http://alpinelinux.org/).
 
-<!-- MDTOC maxdepth:2 firsth1:0 numbering:0 flatten:0 bullets:1 updateOnSave:1 -->
+<!-- MDTOC maxdepth:6 firsth1:0 numbering:0 flatten:0 bullets:1 updateOnSave:1 -->
 
 - [Supported tags](#supported-tags)   
 - [Why?](#why)   
