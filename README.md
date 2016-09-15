@@ -137,6 +137,7 @@ RUN /entrypoint.sh \
   -b openssl-dev \
 && echo
 CMD ["ajenti-panel"]
+# you won't be able to add more dependencies later though-- see 'Debugging'
 ```
 
 Or, using the onbuild image:
@@ -158,9 +159,11 @@ docker build --rm -t jfloff/app .
 ```
 
 ### Debugging
+The `/entrypoint.sh` script that manages dependencies creates an empty file, `/requirements.installed`, telling the script not to install any dependencies after the container's first run. Removing this file will allow the script to work again if it is needed.
+
 You can also access `bash` inside the container:
 ```shell
-docker run --rm -ti jfloff/alpine-python /bin/bash
+docker run --rm -ti jfloff/alpine-python bash
 ```
 
 
