@@ -42,17 +42,20 @@ A small Python Docker image based on [Alpine Linux](http://alpinelinux.org/).
 The default docker python images are too [big](https://github.com/docker-library/python/issues/45), much larger than they need to be. Hence I built this simple image based on [docker-alpine](https://github.com/gliderlabs/docker-alpine), that has everything needed for the most common python projects - including `python3-dev` (which is not common in most minimal alpine python packages).
 
 ```
-REPOSITORY           TAG                 SIZE
+REPOSITORY            TAG                SIZE
 jfloff/alpine-python  2.7-slim           52.86 MB
+python                2.7-slim           180.8 MB
+
 jfloff/alpine-python  2.7-onbuild        204 MB
 jfloff/alpine-python  2.7                204 MB
+python                2.7                676.2 MB
+
 jfloff/alpine-python  3.4-slim           63.93 MB
+python                3.4-slim           193.9 MB
+
 jfloff/alpine-python  3.4-onbuild        226.8 MB
 jfloff/alpine-python  3.4                226.8 MB
 python                3.4                681.5 MB
-python                2.7                676.2 MB
-python                3.4-slim           193.9 MB
-python                2.7-slim           180.8 MB
 ```
 
 Perhaps this could be even more smaller, but I'm not an Alpine guru. **Feel free to post a PR.**
@@ -75,7 +78,7 @@ You can also access `bash` inside the container:
 docker run --rm -ti jfloff/alpine-python bash
 ```
 
-## Usage of onbuild images
+## Usage of `onbuild` images
 
 These images can be used to bake your dependencies into an image by extending the plain python images. To do so, create a custom `Dockerfile` like this:
 ```dockerfile
@@ -98,11 +101,11 @@ Personally, I build an extended `Dockerfile` version (like shown above), and mou
 docker run --rm -v "$(pwd)":/home/app -w /home/app -p 5000:5000 -ti jfloff/app
 ```
 
-## Usage of slim images
+## Usage of `slim` images
 
 These images are very small to download, and can install requirements at run-time via flags. The install only happens the first time the container is run, and dependencies can be baked in (see Creating Images).
 
-### Via `docker run`
+#### Via `docker run`
 These images can be run in multiple ways. With no arguments, it will run `python` interactively:
 ```shell
 docker run --rm -ti jfloff/alpine-python:2.7-slim
@@ -113,7 +116,7 @@ If you specify a command, they will run that:
 docker run --rm -ti jfloff/alpine-python:2.7-slim python hello.py
 ```
 
-### Pip Dependencies
+#### Pip Dependencies
 Pip dependencies can be installed by the `-p` switch, or a `requirements.txt` file.
 
 If the file is at `/requirements.txt` it will be automatically read for dependencies. If not, use the `-P` or `-r` switch to specify a file.
@@ -140,7 +143,7 @@ docker run --rm -ti \
     -- python /usr/src/app/hello.py
 ```
 
-### Run-Time Dependencies
+#### Run-Time Dependencies
 Alpine package dependencies can be installed by the `-a` switch, or an `apk-requirements.txt` file.
 
 If the file is at `/apk-requirements.txt` it will be automatically read for dependencies. If not, use the `-A` switch to specify a file.
@@ -154,7 +157,7 @@ docker run --rm -ti jfloff/alpine-python:2.7-slim -a openssl -- python hello.py
 docker run --rm -ti jfloff/alpine-python:2.7-slim -a py-libxml2 -p ajenti
 ```
 
-### Build-Time Dependencies
+#### Build-Time Dependencies
 Build-time Alpine package dependencies (such as compile headers) can be installed by the `-b` switch, or a `build-requirements.txt` file. They will be removed after the dependencies are installed to save space.
 
 If the file is at `/build-requirements.txt` it will be automatically read for dependencies. If not, use the `-B` switch to specify a file.
@@ -169,7 +172,7 @@ docker run --rm -ti jfloff/alpine-python:2.7-slim \
   -- python hello.py
 ```
 
-### Creating Images
+#### Creating Images
 Similar to the onbuild images, dependencies can be baked into a new image by using a custom `Dockerfile`, e.g:
 ```dockerfile
 FROM jfloff/alpine-python:2.7-slim
@@ -187,7 +190,7 @@ CMD ["ajenti-panel"]
 # you won't be able to add more dependencies later though-- see 'Debugging'
 ```
 
-### Debugging
+#### Debugging
 The `/entrypoint.sh` script that manages dependencies in the slim images creates an empty file, `/requirements.installed`, telling the script not to install any dependencies after the container's first run. Removing this file will allow the script to work again if it is needed.
 
 You can also access `bash` inside the container:
