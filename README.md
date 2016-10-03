@@ -2,7 +2,6 @@
 
 [![Docker Stars](https://img.shields.io/docker/stars/jfloff/alpine-python.svg)][hub]
 [![Docker Pulls](https://img.shields.io/docker/pulls/jfloff/alpine-python.svg)][hub]
-[![Docker Layers](https://badge.imagelayers.io/jfloff/alpine-python:latest.svg)](https://imagelayers.io/?images=jfloff/alpine-python:latest 'Get your own badge on imagelayers.io')
 
 [hub]: https://hub.docker.com/r/jfloff/alpine-python/
 
