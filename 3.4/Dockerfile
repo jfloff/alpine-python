@@ -5,13 +5,16 @@ ENV PYTHON_MAJOR_VERSION=3
 # Install needed packages. Notes:
 #   * dumb-init: a proper init system for containers, to reap zombie children
 #   * build-base: used so we include the basic development packages (gcc)
+#   * git: to ease up clones of repos
 #   * bash: so we can access /bin/bash
 #   * ca-certificates: for SSL verification during Pip and easy_install
+#   * python: the binaries themselves
 #   * python-dev: are used for gevent e.g.
 ENV PACKAGES="\
   dumb-init \
   musl \
   build-base \
+  git \
   bash \
   ca-certificates \
   python${PYTHON_MAJOR_VERSION} \

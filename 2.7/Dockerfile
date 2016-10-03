@@ -5,8 +5,9 @@ ENV PYTHON_MAJOR_VERSION=2
 # Install needed packages. Notes:
 #   * dumb-init: a proper init system for containers, to reap zombie children
 #   * build-base: used so we include the basic development packages (gcc)
-#   * ca-certificates: for SSL verification during Pip and easy_install
 #   * bash: so we can access /bin/bash
+#   * git: to ease up clones of repos
+#   * ca-certificates: for SSL verification during Pip and easy_install
 #   * python: the binaries themselves
 #   * python-dev: are used for gevent e.g.
 #   * py-setuptools: required only in major version 2, installs easy_install so we can install Pip.
@@ -15,6 +16,7 @@ ENV PACKAGES="\
   musl \
   build-base \
   bash \
+  git \
   ca-certificates \
   python${PYTHON_MAJOR_VERSION} \
   python${PYTHON_MAJOR_VERSION}-dev \
