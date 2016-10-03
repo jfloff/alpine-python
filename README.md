@@ -29,8 +29,6 @@ A small Python Docker image based on [Alpine Linux](http://alpinelinux.org/).
 * **2.7 ([Dockerfile](https://github.com/jfloff/alpine-python/blob/master/2.7/Dockerfile))**
 * **2.7-onbuild ([Dockerfile](https://github.com/jfloff/alpine-python/blob/master/2.7/onbuild/Dockerfile))**
 * **2.7-slim ([Dockerfile](https://github.com/jfloff/alpine-python/blob/master/2.7/slim/Dockerfile))**
-
-
 * **3.4 ([Dockerfile](https://github.com/jfloff/alpine-python/blob/master/3.4/Dockerfile))**
 * **3.4-onbuild ([Dockerfile](https://github.com/jfloff/alpine-python/blob/master/3.4/onbuild/Dockerfile))**
 * **3.4-slim ([Dockerfile](https://github.com/jfloff/alpine-python/blob/master/3.4/slim/Dockerfile))**
