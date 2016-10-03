@@ -2,22 +2,17 @@ FROM alpine:3.4
 
 ENV PYTHON_MAJOR_VERSION=2
 
-# Install needed packages. Notes:
+# These are always installed. Notes:
 #   * dumb-init: a proper init system for containers, to reap zombie children
-#   * build-base: used so we include the basic development packages (gcc)
+#   * bash: For entrypoint, and debugging
 #   * ca-certificates: for SSL verification during Pip and easy_install
-#   * bash: so we can access /bin/bash
 #   * python: the binaries themselves
-#   * python-dev: are used for gevent e.g.
 #   * py-setuptools: required only in major version 2, installs easy_install so we can install Pip.
 ENV PACKAGES="\
   dumb-init \
-  musl \
-  build-base \
   bash \
   ca-certificates \
   python${PYTHON_MAJOR_VERSION} \
-  python${PYTHON_MAJOR_VERSION}-dev \
   py-setuptools \
 "
 
@@ -50,6 +45,23 @@ RUN echo \
   && if [[ ! -e /usr/bin/pip ]];           then ln -sf /usr/bin/pip${PYTHON_MAJOR_VERSION} /usr/bin/pip; fi \
 && echo
 
-# since we will be "always" mounting the volume, we can set this up
-ENTRYPOINT ["/usr/bin/dumb-init"]
-CMD ["python"]
+# Copy in the entrypoint script -- this installs prerequisites on container start.
+COPY entrypoint.sh /entrypoint.sh
+
+# These packages are not installed immediately, but are added at runtime or ONBUILD to shrink the image as much as possible. Notes:
+#   * build-base: used so we include the basic development packages (gcc)
+#   * linux-headers: commonly needed, and an unusual package name from Alpine.
+#   * python-dev: are used for gevent e.g.
+#   * py-pip: provides pip, not needed once the software is built
+ENV BUILD_PACKAGES="\
+  build-base \
+  linux-headers \
+  python${PYTHON_MAJOR_VERSION}-dev \
+"
+
+# This script installs APK and Pip prerequisites on container start, or ONBUILD. Notes:
+#   * Reads the -a flags and /apk-requirements.txt for install requests
+#   * Reads the -b flags and /build-requirements.txt for build packages -- removed when build is complete
+#   * Reads the -p flags and /requirements.txt for Pip packages
+#   * Reads the -r flag to specify a different file path for /requirements.txt
+ENTRYPOINT ["/usr/bin/dumb-init", "bash", "/entrypoint.sh"]

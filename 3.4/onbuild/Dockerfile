@@ -2,6 +2,9 @@ FROM jfloff/alpine-python:3.4
 
 # install requirements
 # this way when you build you won't need to install again
-# ans since COPY is cached we don't need to wait
-ONBUILD COPY ./requirements.txt /tmp/requirements.txt
-ONBUILD RUN pip install -r /tmp/requirements.txt
+# and since COPY is cached we don't need to wait
+ONBUILD COPY requirements.txt /tmp/requirements.txt
+
+# Run the dependencies installer and then allow it to be run again if needed.
+ONBUILD RUN /entrypoint.sh -r /tmp/requirements.txt
+ONBUILD RUN rm -f /requirements.installed
