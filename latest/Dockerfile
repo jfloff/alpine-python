@@ -2,14 +2,12 @@ FROM alpine:3.4
 
 # Install needed packages. Notes:
 #   * dumb-init: a proper init system for containers, to reap zombie children
-#   * musl: standard C library
 #   * build-base: used so we include the basic development packages (gcc)
-#   * bash: so we can access /bin/bash
 #   * git: to ease up clones of repos
+#   * bash: so we can access /bin/bash
 #   * ca-certificates: for SSL verification during Pip and easy_install
 #   * python: the binaries themselves
 #   * python-dev: are used for gevent e.g.
-#   * py-setuptools: required only in major version 2, installs easy_install so we can install Pip.
 ENV PACKAGES="\
   dumb-init \
   musl \
@@ -17,9 +15,8 @@ ENV PACKAGES="\
   bash \
   git \
   ca-certificates \
-  python2 \
-  python2-dev \
-  py-setuptools \
+  python3 \
+  python3-dev \
 "
 
 RUN echo \
@@ -33,15 +30,16 @@ RUN echo \
     (sed -i -e 's/dl-cdn/dl-4/g' /etc/apk/repositories && apk add --no-cache $PACKAGES) \
 
   # make some useful symlinks that are expected to exist
-  && if [[ ! -e /usr/bin/python ]];        then ln -sf /usr/bin/python2.7 /usr/bin/python; fi \
-  && if [[ ! -e /usr/bin/python-config ]]; then ln -sf /usr/bin/python2.7-config /usr/bin/python-config; fi \
-  && if [[ ! -e /usr/bin/easy_install ]];  then ln -sf /usr/bin/easy_install-2.7 /usr/bin/easy_install; fi \
+  && if [[ ! -e /usr/bin/python ]];        then ln -sf /usr/bin/python3 /usr/bin/python; fi \
+  && if [[ ! -e /usr/bin/python-config ]]; then ln -sf /usr/bin/python3-config /usr/bin/python-config; fi \
+  && if [[ ! -e /usr/bin/idle ]];          then ln -sf /usr/bin/idle3 /usr/bin/idle; fi \
+  && if [[ ! -e /usr/bin/pydoc ]];         then ln -sf /usr/bin/pydoc3 /usr/bin/pydoc; fi \
+  && if [[ ! -e /usr/bin/easy_install ]];  then ln -sf /usr/bin/easy_install-3* /usr/bin/easy_install; fi \
 
   # Install and upgrade Pip
   && easy_install pip \
   && pip install --upgrade pip \
-  && if [[ ! -e /usr/bin/pip ]]; then ln -sf /usr/bin/pip2.7 /usr/bin/pip; fi \
-  && echo
+  && if [[ ! -e /usr/bin/pip ]]; then ln -sf /usr/bin/pip3 /usr/bin/pip; fi
 
 # since we will be "always" mounting the volume, we can set this up
 ENTRYPOINT ["/usr/bin/dumb-init"]

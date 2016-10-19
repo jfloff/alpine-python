@@ -73,7 +73,7 @@ if [[ ! -f /requirements.installed ]]; then
   fi
 
   # Unfortunately the Alpine repositories are in a slightly inconsistent state for now-- python2 only exists in 'edge', not main.
-  if [[ "$PYTHON_MAJOR_VERSION" == '2' ]]; then BUILD_PACKAGES="$(echo $BUILD_PACKAGES | sed -e 's/python2/python/g')"; fi \
+  # if [[ "$PYTHON_VERSION" == '2' ]]; then BUILD_PACKAGES="$(echo $BUILD_PACKAGES | sed -e 's/python2/python/g')"; fi \
 
   apk add --no-cache $BUILD_PACKAGES "${APK_REQUIREMENTS[@]}" "${BUILD_REQUIREMENTS[@]}"
 

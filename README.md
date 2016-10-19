@@ -21,7 +21,8 @@ A small Python Docker image based on [Alpine Linux](http://alpinelinux.org/).
    - [Build-Time Dependencies](#build-time-dependencies)   
    - [Creating Images](#creating-images)   
    - [Debugging](#debugging)   
-- [License](#license)   
+- [License](#license)
+- [TODO](#todo)
 
 <!-- /MDTOC -->
 
@@ -39,20 +40,24 @@ A small Python Docker image based on [Alpine Linux](http://alpinelinux.org/).
 The default docker python images are too [big](https://github.com/docker-library/python/issues/45), much larger than they need to be. Hence I built this simple image based on [docker-alpine](https://github.com/gliderlabs/docker-alpine), that has everything needed for the most common python projects - including `python3-dev` (which is not common in most minimal alpine python packages).
 
 ```
-REPOSITORY            TAG                SIZE
-jfloff/alpine-python  2.7-slim           52.86 MB
-python                2.7-slim           180.8 MB
+REPOSITORY                TAG             SIZE
+jfloff/alpine-python      2.7-slim        52.86 MB
+python                    2.7-slim        180.8 MB
 
-jfloff/alpine-python  2.7-onbuild        204 MB
-jfloff/alpine-python  2.7                204 MB
-python                2.7                676.2 MB
+jfloff/alpine-python      2.7             234.2 MB
+python                    2.7             676.2 MB
 
-jfloff/alpine-python  3.4-slim           63.93 MB
-python                3.4-slim           193.9 MB
+jfloff/alpine-python      3.4-slim        110.4 MB
+python                    3.4-slim        193.9 MB
 
-jfloff/alpine-python  3.4-onbuild        226.8 MB
-jfloff/alpine-python  3.4                226.8 MB
-python                3.4                681.5 MB
+jfloff/alpine-python      3.4             280 MB
+python                    3.4             681.5 MB
+
+jfloff/alpine-python      latest          248.8 MB
+python                    3.5             685.4 MB
+
+jfloff/alpine-python      latest-slim     79.11 MB
+python                    3.5-slim        197.8 MB
 ```
 
 Perhaps this could be even more smaller, but I'm not an Alpine guru. **Feel free to post a PR.**
@@ -197,3 +202,8 @@ docker run --rm -ti jfloff/alpine-python:2.7-slim bash
 
 ## License
 The code in this repository, unless otherwise noted, is MIT licensed. See the `LICENSE` file in this repository.
+
+## TODO
+At this moment with Alpine APK we are not able to install previous packages versions, i.e., its virtually impossible to provide multiple versions of Python. This is limits us to only provide the latest `python3` package that's available in Alpine APK.
+
+While I was able to provide a 3.4 tag (due to existence of `python3.4` packages), this is a temporary fix. Ideally we would support a solution like the official `python` images does (see example [here](https://github.com/docker-library/python/blob/master/3.4/alpine/Dockerfile)), where the specific Python version is downloaded and compiled. Yet, I don't want to follow the pitfall of copy-pasting that solution, otherwise we end up with almost the same image. ***I'm requesting PRs on this issue, either by optimizing official solution, or other.***
