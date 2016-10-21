@@ -9,6 +9,7 @@ FROM alpine:3.4
 #   * python: the binaries themselves
 #   * python-dev: are used for gevent e.g.
 ENV PACKAGES="\
+  linux-headers \
   dumb-init \
   musl \
   build-base \
@@ -28,6 +29,12 @@ RUN echo \
   # Add the packages, with a CDN-breakage fallback if needed
   && apk add --no-cache $PACKAGES || \
     (sed -i -e 's/dl-cdn/dl-4/g' /etc/apk/repositories && apk add --no-cache $PACKAGES) \
+
+  # turn back the clock -- so hacky!
+  && echo "http://dl-cdn.alpinelinux.org/alpine/v3.4/main/" > /etc/apk/repositories \
+  && echo "@edge-testing http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories \
+  && echo "@edge-community http://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories \
+  && echo "@edge-main http://dl-cdn.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories \
 
   # make some useful symlinks that are expected to exist
   && if [[ ! -e /usr/bin/python ]];        then ln -sf /usr/bin/python3.4 /usr/bin/python; fi \
