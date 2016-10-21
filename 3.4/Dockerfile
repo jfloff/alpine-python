@@ -2,16 +2,18 @@ FROM alpine:3.4
 
 # Install needed packages. Notes:
 #   * dumb-init: a proper init system for containers, to reap zombie children
+#   * musl: standard C library
+#   * linux-headers: commonly needed, and an unusual package name from Alpine.
 #   * build-base: used so we include the basic development packages (gcc)
-#   * git: to ease up clones of repos
 #   * bash: so we can access /bin/bash
+#   * git: to ease up clones of repos
 #   * ca-certificates: for SSL verification during Pip and easy_install
 #   * python: the binaries themselves
 #   * python-dev: are used for gevent e.g.
 ENV PACKAGES="\
-  linux-headers \
   dumb-init \
   musl \
+  linux-headers \
   build-base \
   bash \
   git \
