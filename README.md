@@ -63,7 +63,7 @@ jfloff/alpine-python      latest-slim     79.11 MB
 python                    3.5-slim        197.8 MB
 ```
 
-Perhaps this could be even more smaller, but I'm not an Alpine guru. **Feel free to post a PR.**
+Perhaps this could be even smaller, but I'm not an Alpine guru. **Feel free to post a PR.**
 
 ## Details
 * Installs `build-base` and `python-dev`, allowing the use of more advanced packages such as `gevent`
