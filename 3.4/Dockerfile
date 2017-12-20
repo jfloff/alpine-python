@@ -1,6 +1,6 @@
-FROM alpine:3.6
+FROM alpine:3.7
 
-ENV ALPINE_VERSION=3.6
+ENV ALPINE_VERSION=3.7
 
 # Install needed packages. Notes:
 #   * dumb-init: a proper init system for containers, to reap zombie children
