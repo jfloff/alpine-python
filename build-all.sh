@@ -10,11 +10,17 @@ build_with_status () {
 
   echo -n "Building $tag:"
   docker build . -t $tag &> /dev/null
-  if [[ $? -eq 0 ]]; then
-    echo "$bold$green GOOD$reset"
-  else
-    echo "$bold$red BAD$reset"
+  if [[ $? -ne 0 ]]; then
+    echo "$bold$red BUILD FAILED$reset"
     exit 1
+  fi
+
+  echo 'print("something")' | docker run --rm -i $tag &> /dev/null
+  if [[ $? -ne 0 ]]; then
+    echo "$bold$red TEST FAILED$reset"
+    exit 1
+  else
+    echo "$bold$green SUCCESS$reset"
   fi
 }
 
@@ -27,18 +33,8 @@ HERE="$(dirname $(readlink -f $0 || realpath $0))"
 cd $HERE
 
 # Find all the top-level dirs
-for version in $(find -maxdepth 1 -not -name '.*' -type d -printf '%P\n'); do
+for version in $(find -maxdepth 1 -not -name '.*' -type d -printf '%P\n' | sort); do
   pushd $version
-
-  # Build the flat version
   build_with_status $repo:$version
-
-  # Build any sub-versions
-  for subtype in $(find -maxdepth 1 -not -name '.*' -type d -printf '%P\n'); do
-    pushd $subtype
-    build_with_status $repo:$version-$subtype
-    popd
-  done
-
   popd
 done

@@ -1,0 +1,32 @@
+sudo: required
+services:
+  - docker
+
+matrix:
+  fast_finish: true
+
+before_install:
+  - bash ./.travis/main.sh
+
+env:
+  global:
+    - alpine_image='alpine:3.6'
+    - latest='3.4'
+    - repo='jfloff/alpine-python'
+  matrix:
+    - version='2.7' type=''
+    - version='2.7' type='-onbuild'
+    - version='2.7' type='-slim'
+    - version='3.4' type=''
+    - version='3.4' type='-onbuild'
+    - version='3.4' type='-slim'
+
+before_script:
+  - sudo docker pull $alpine_image
+
+script:
+  - sudo docker build -t $repo:$version$type $version$type
+  - echo 'print("Success")' | sudo docker run -i --rm $repo:$version$type
+
+after_success:
+  - bash ./.travis/push.sh
