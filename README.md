@@ -33,9 +33,9 @@ A small Python Docker image based on [Alpine Linux](http://alpinelinux.org/).
 * **`3.4` ([3.4/Dockerfile](https://github.com/jfloff/alpine-python/blob/master/3.4/Dockerfile))**
 * **`3.4-onbuild` ([3.4-onbuild/Dockerfile](https://github.com/jfloff/alpine-python/blob/master/3.4-onbuild/Dockerfile))**
 * **`3.4-slim` ([3.4-slim/Dockerfile](https://github.com/jfloff/alpine-python/blob/master/3.4-slim/Dockerfile))**
-* **`latest` ([Dockerfile](https://github.com/jfloff/alpine-python/blob/master/3.4/Dockerfile))**
-* **`latest-onbuild` ([Dockerfile](https://github.com/jfloff/alpine-python/blob/master/3.4-onbuild/Dockerfile))**
-* **`latest-slim` ([Dockerfile](https://github.com/jfloff/alpine-python/blob/master/3.4-slim/Dockerfile))**
+* **`recent` `latest` ([Dockerfile](https://github.com/jfloff/alpine-python/blob/master/3.4/Dockerfile))**
+* **`recent-onbuild` ([Dockerfile](https://github.com/jfloff/alpine-python/blob/master/3.4-onbuild/Dockerfile))**
+* **`recent-slim` ([Dockerfile](https://github.com/jfloff/alpine-python/blob/master/3.4-slim/Dockerfile))**
 
 **NOTE:** `onbuild` images install the `requirements.txt` of your project from the get go. This allows you to cache your requirements right in the build. _Make sure you are in the same directory of your `requirements.txt` file_.
 
