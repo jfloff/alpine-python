@@ -8,7 +8,7 @@ reset="$(tput sgr0)"
 build_with_status () {
   tag="$1"
 
-  echo -n "Building $tag:"
+  echo -n "Building $tag"
   docker build . -t $tag &> /dev/null
   if [[ $? -ne 0 ]]; then
     echo "$bold$red BUILD FAILED$reset"

@@ -10,8 +10,8 @@ before_install:
 
 env:
   global:
-    - alpine_image='alpine:3.6'
-    - latest='3.4'
+    - alpine_image='alpine:3.7'
+    - latest='recent'
     - repo='jfloff/alpine-python'
   matrix:
     - version='2.7' type=''
@@ -20,6 +20,9 @@ env:
     - version='3.4' type=''
     - version='3.4' type='-onbuild'
     - version='3.4' type='-slim'
+    - version='recent' type=''
+    - version='recent' type='-onbuild'
+    - version='recent' type='-slim'
 
 before_script:
   - sudo docker pull $alpine_image
