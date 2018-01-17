@@ -32,9 +32,6 @@ A small Python Docker image based on [Alpine Linux](http://alpinelinux.org/).
 * **`2.7` ([2.7/Dockerfile](https://github.com/jfloff/alpine-python/blob/master/2.7/Dockerfile))**
 * **`2.7-onbuild` ([2.7-onbuild/Dockerfile](https://github.com/jfloff/alpine-python/blob/master/2.7-onbuild/Dockerfile))**
 * **`2.7-slim` ([2.7-slim/Dockerfile](https://github.com/jfloff/alpine-python/blob/master/2.7-slim/Dockerfile))**
-* **`3.4` ([3.4/Dockerfile](https://github.com/jfloff/alpine-python/blob/master/3.4/Dockerfile))**
-* **`3.4-onbuild` ([3.4-onbuild/Dockerfile](https://github.com/jfloff/alpine-python/blob/master/3.4-onbuild/Dockerfile))**
-* **`3.4-slim` ([3.4-slim/Dockerfile](https://github.com/jfloff/alpine-python/blob/master/3.4-slim/Dockerfile))**
 * **`recent` `latest` ([Dockerfile](https://github.com/jfloff/alpine-python/blob/master/recent/Dockerfile))**
 * **`recent-onbuild` ([Dockerfile](https://github.com/jfloff/alpine-python/blob/master/recent-onbuild/Dockerfile))**
 * **`recent-slim` ([Dockerfile](https://github.com/jfloff/alpine-python/blob/master/recent-slim/Dockerfile))**
@@ -48,29 +45,26 @@ The default docker python images are too [big](https://github.com/docker-library
 
 |REPOSITORY|TAG|SIZE|
 |-|-|-|
-|jfloff/alpine-python|3.4-slim|66.9MB|
-|jfloff/alpine-python|3.4|232MB|
 |jfloff/alpine-python|2.7-slim|52.8MB|
-|jfloff/alpine-python|2.7|226MB|
-|jfloff/alpine-python|recent-slim|55.7MB|
-|jfloff/alpine-python|recent|233MB|
-||||
-|python|3.4-slim|151MB|
-|python|3.4-alpine|85.5MB|
-|python|3.4|687MB|
 |python|2.7-slim|138MB|
+||||
+|jfloff/alpine-python|2.7|226MB|
 |python|2.7-alpine|75.3MB|
 |python|2.7|681MB|
+||||
+|jfloff/alpine-python|recent-slim|55.7MB|
 |python|3.6-slim|156MB|
-|python|3.6-alpine|92.1MB|
+||||
+|jfloff/alpine-python|recent|233MB|
 |python|3.6|692MB|
+|python|3.6-alpine|92.1MB|
 
 Perhaps this could be even smaller, but I'm not an Alpine guru. **Feel free to post a PR.**
 
 ## Details
 * Installs `build-base` and `python-dev`, allowing the use of more advanced packages such as `gevent`
 * Installs `bash` allowing interaction with the container
-* Just like the main `python` docker image, it creates useful symlinks that are expected to exist, e.g. `python3.4` > `python`, `pip2.7` > `pip`, etc.)
+* Just like the main `python` docker image, it creates useful symlinks that are expected to exist, e.g. `python3` > `python`, `pip2.7` > `pip`, etc.)
 * Added `testing` and `community` repositories to Alpine's `/etc/apk/repositories` file
 
 ## Usage
@@ -89,7 +83,7 @@ docker run --rm -ti jfloff/alpine-python bash
 
 These images can be used to bake your dependencies into an image by extending the plain python images. To do so, create a custom `Dockerfile` like this:
 ```dockerfile
-FROM jfloff/alpine-python:3.4-onbuild
+FROM jfloff/alpine-python:recent-onbuild
 
 # for a flask server
 EXPOSE 5000
@@ -211,4 +205,4 @@ The code in this repository, unless otherwise noted, is MIT licensed. See the `L
 ## TODO
 At this moment with Alpine APK we are not able to install previous packages versions, i.e., its virtually impossible to provide multiple versions of Python. This is limits us to only provide the latest `python3` package that's available in Alpine APK.
 
-While I was able to provide a 3.4 tag (due to existence of `python3.4` packages), this is a temporary fix. Ideally we would support a solution like the official `python` images does (see example [here](https://github.com/docker-library/python/blob/master/3.4/alpine/Dockerfile)), where the specific Python version is downloaded and compiled. Yet, I don't want to follow the pitfall of copy-pasting that solution, otherwise we end up with almost the same image. ***I'm requesting PRs on this issue, either by optimizing official solution, or other.***
+Ideally we would support a solution like the official `python` images does (see example [here](https://github.com/docker-library/python/blob/master/3.4/alpine/Dockerfile)), where the specific Python version is downloaded and compiled. Yet, I don't want to follow the pitfall of copy-pasting that solution, otherwise we end up with almost the same image. ***I'm requesting PRs on this issue, either by optimizing official solution, or other.***
