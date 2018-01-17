@@ -35,9 +35,9 @@ A small Python Docker image based on [Alpine Linux](http://alpinelinux.org/).
 * **`3.4` ([3.4/Dockerfile](https://github.com/jfloff/alpine-python/blob/master/3.4/Dockerfile))**
 * **`3.4-onbuild` ([3.4-onbuild/Dockerfile](https://github.com/jfloff/alpine-python/blob/master/3.4-onbuild/Dockerfile))**
 * **`3.4-slim` ([3.4-slim/Dockerfile](https://github.com/jfloff/alpine-python/blob/master/3.4-slim/Dockerfile))**
-* **`recent` `latest` ([Dockerfile](https://github.com/jfloff/alpine-python/blob/master/3.4/Dockerfile))**
-* **`recent-onbuild` ([Dockerfile](https://github.com/jfloff/alpine-python/blob/master/3.4-onbuild/Dockerfile))**
-* **`recent-slim` ([Dockerfile](https://github.com/jfloff/alpine-python/blob/master/3.4-slim/Dockerfile))**
+* **`recent` `latest` ([Dockerfile](https://github.com/jfloff/alpine-python/blob/master/recent/Dockerfile))**
+* **`recent-onbuild` ([Dockerfile](https://github.com/jfloff/alpine-python/blob/master/recent-onbuild/Dockerfile))**
+* **`recent-slim` ([Dockerfile](https://github.com/jfloff/alpine-python/blob/master/recent-slim/Dockerfile))**
 
 **NOTES:**
 - `recent` tags are the default `python3` version that Alpine current offers. **_Current recent is `3.6`_**.
