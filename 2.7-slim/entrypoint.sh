@@ -8,6 +8,8 @@ APKFILE='/apk-requirements.txt'
 BUILDFILE='/build-requirements.txt'
 REQFILE='/requirements.txt'
 
+TMP_REQFILE='/tmp/requirements.txt'
+
 function usage () {
 	echo <<"EOF"
 Usage: $0 [-a -b -p -A -B -P -r] [--] <your command line>
@@ -78,13 +80,22 @@ if [[ ! -f /requirements.installed ]]; then
   apk add --no-cache $BUILD_PACKAGES "${APK_REQUIREMENTS[@]}" "${BUILD_REQUIREMENTS[@]}"
 
   # Install any Pip requirements
-  if [[ -f "$REQFILE" ]]; then
-    PIP_REQUIREMENTS+=($( cat "$REQFILE" ))
-  fi
+	TARGET_REQFILE="$REQFILE"
 
-  if [[ ${#PIP_REQUIREMENTS[@]} -gt 0 ]]; then
+	if [[ ${#PIP_REQUIREMENTS[@]} -gt 0 ]]; then
+		# Put all Pip requirements into the same file.
+		printf "%s\n" "${PIP_REQUIREMENTS[@]}" >> "$TMP_REQFILE"
+
+		if [[ -f "$REQFILE" && "$(cat $REQFILE | wc -l)" -gt 0 ]]; then
+			cat "$REQFILE" >> "$TMP_REQFILE"
+		fi
+
+		TARGET_REQFILE="$TMP_REQFILE"
+	fi
+
+  if [[ -f $TARGET_REQFILE && "$(cat $TARGET_REQFILE | wc -l)" -gt 0 ]]; then
     pip install --upgrade pip
-    pip install "${PIP_REQUIREMENTS[@]}"
+    pip install -r "$TARGET_REQFILE"
   fi
 
   # Remove packages that were only required for build.
