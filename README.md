@@ -48,14 +48,14 @@ The default docker python images are too [big](https://github.com/docker-library
 |jfloff/alpine-python|2.7-slim|52.8MB|
 |python|2.7-slim|138MB|
 ||||
-|jfloff/alpine-python|2.7|226MB|
+|jfloff/alpine-python|2.7|232MB|
 |python|2.7-alpine|75.3MB|
 |python|2.7|681MB|
 ||||
 |jfloff/alpine-python|recent-slim|55.7MB|
 |python|3.6-slim|156MB|
 ||||
-|jfloff/alpine-python|recent|233MB|
+|jfloff/alpine-python|recent|239MB|
 |python|3.6|692MB|
 |python|3.6-alpine|92.1MB|
 
