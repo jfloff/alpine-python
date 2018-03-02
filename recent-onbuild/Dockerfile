@@ -5,6 +5,7 @@ ENV ALPINE_VERSION=3.7
 # Install needed packages. Notes:
 #   * dumb-init: a proper init system for containers, to reap zombie children
 #   * musl: standard C library
+#   * lib6-compat: compatibility libraries for glibc
 #   * linux-headers: commonly needed, and an unusual package name from Alpine.
 #   * build-base: used so we include the basic development packages (gcc)
 #   * bash: so we can access /bin/bash
@@ -15,6 +16,7 @@ ENV ALPINE_VERSION=3.7
 ENV PACKAGES="\
   dumb-init \
   musl \
+  libc6-compat \
   linux-headers \
   build-base \
   bash \
