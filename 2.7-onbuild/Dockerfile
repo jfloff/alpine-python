@@ -1,8 +1,14 @@
 FROM alpine:3.7
 
-ENV ALPINE_VERSION=3.7
+# VERSIONS
+ENV ALPINE_VERSION=3.7 \
+    PYTHON_VERSION=2.7.14
 
-# Install needed packages. Notes:
+# PATHS
+ENV PYTHON_PATH=/usr/lib/python$PYTHON_VERSION \
+    PATH="/usr/lib/python$PYTHON_VERSION/bin/:${PATH}"
+
+# PACKAGES
 #   * dumb-init: a proper init system for containers, to reap zombie children
 #   * musl: standard C library
 #   * lib6-compat: compatibility libraries for glibc
@@ -11,49 +17,72 @@ ENV ALPINE_VERSION=3.7
 #   * bash: so we can access /bin/bash
 #   * git: to ease up clones of repos
 #   * ca-certificates: for SSL verification during Pip and easy_install
-#   * python: the binaries themselves
-#   * python-dev: are used for gevent e.g.
-#   * py-setuptools: required only in major version 2, installs easy_install so we can install Pip.
 ENV PACKAGES="\
-  dumb-init \
-  musl \
-  libc6-compat \
-  linux-headers \
-  build-base \
-  bash \
-  git \
-  ca-certificates \
-  python2 \
-  python2-dev \
-  py-setuptools \
+    dumb-init \
+    musl \
+    libc6-compat \
+    linux-headers \
+    build-base \
+    bash \
+    git \
+    ca-certificates \
 "
 
-RUN echo \
-  # replacing default repositories with edge ones
-  && echo "http://dl-cdn.alpinelinux.org/alpine/v$ALPINE_VERSION/testing" > /etc/apk/repositories \
-  && echo "http://dl-cdn.alpinelinux.org/alpine/v$ALPINE_VERSION/community" >> /etc/apk/repositories \
-  && echo "http://dl-cdn.alpinelinux.org/alpine/v$ALPINE_VERSION/main" >> /etc/apk/repositories \
+# PACKAGES needed to built python
+ENV PYTHON_BUILD_PACKAGES="\
+    readline-dev \
+    zlib-dev \
+    bzip2-dev \
+    sqlite-dev \
+    libressl-dev \
+"
 
-  # Add the packages, with a CDN-breakage fallback if needed
-  && apk add --no-cache $PACKAGES || \
-    (sed -i -e 's/dl-cdn/dl-4/g' /etc/apk/repositories && apk add --no-cache $PACKAGES) \
+RUN set -ex ;\
+    # find MAJOR and MINOR python versions based on $PYTHON_VERSION
+    export PYTHON_MAJOR_VERSION=$(echo "${PYTHON_VERSION}" | rev | cut -d"." -f3-  | rev) ;\
+    export PYTHON_MINOR_VERSION=$(echo "${PYTHON_VERSION}" | rev | cut -d"." -f2-  | rev) ;\
+    # replacing default repositories with edge ones
+    echo "http://dl-cdn.alpinelinux.org/alpine/v$ALPINE_VERSION/community" >> /etc/apk/repositories ;\
+    echo "http://dl-cdn.alpinelinux.org/alpine/v$ALPINE_VERSION/main" >> /etc/apk/repositories ;\
 
-  # turn back the clock -- so hacky!
-  && echo "http://dl-cdn.alpinelinux.org/alpine/v$ALPINE_VERSION/main/" > /etc/apk/repositories \
-  # && echo "@community http://dl-cdn.alpinelinux.org/alpine/v$ALPINE_VERSION/community" >> /etc/apk/repositories \
-  # && echo "@testing http://dl-cdn.alpinelinux.org/alpine/v$ALPINE_VERSION/testing" >> /etc/apk/repositories \
-  # && echo "@edge-main http://dl-cdn.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories \
+    # Add the packages, with a CDN-breakage fallback if needed
+    apk add --no-cache $PACKAGES || \
+        (sed -i -e 's/dl-cdn/dl-4/g' /etc/apk/repositories && apk add --no-cache $PACKAGES) ;\
+    # Add packages just for the python build process with a CDN-breakage fallback if needed
+    apk add --no-cache --virtual .build-deps $PYTHON_BUILD_PACKAGES || \
+        (sed -i -e 's/dl-cdn/dl-4/g' /etc/apk/repositories && apk add --no-cache --virtual .build-deps $PYTHON_BUILD_PACKAGES) ;\
 
-  # make some useful symlinks that are expected to exist
-  && if [[ ! -e /usr/bin/python ]];        then ln -sf /usr/bin/python2.7 /usr/bin/python; fi \
-  && if [[ ! -e /usr/bin/python-config ]]; then ln -sf /usr/bin/python2.7-config /usr/bin/python-config; fi \
-  && if [[ ! -e /usr/bin/easy_install ]];  then ln -sf /usr/bin/easy_install-2.7 /usr/bin/easy_install; fi \
+    # turn back the clock -- so hacky!
+    echo "http://dl-cdn.alpinelinux.org/alpine/v$ALPINE_VERSION/main/" > /etc/apk/repositories ;\
+    # echo "@community http://dl-cdn.alpinelinux.org/alpine/v$ALPINE_VERSION/community" >> /etc/apk/repositories ;\
+    # echo "@testing http://dl-cdn.alpinelinux.org/alpine/v$ALPINE_VERSION/testing" >> /etc/apk/repositories ;\
+    # echo "@edge-main http://dl-cdn.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories ;\
 
-  # Install and upgrade Pip
-  && easy_install pip \
-  && pip install --upgrade pip \
-  && if [[ ! -e /usr/bin/pip ]]; then ln -sf /usr/bin/pip2.7 /usr/bin/pip; fi \
-  && echo
+    # use pyenv to download and compile specific python version
+    git clone --depth 1 https://github.com/pyenv/pyenv /usr/lib/pyenv ;\
+    PYENV_ROOT=/usr/lib/pyenv /usr/lib/pyenv/bin/pyenv install $PYTHON_VERSION ;\
+    # move specific version to correct path delete pyenv, no longer needed
+    mv /usr/lib/pyenv/versions/$PYTHON_VERSION/ $PYTHON_PATH ;\
+    rm -rfv /usr/lib/pyenv ;\
+    # change the path on the header of every file from PYENV_ROOT to PYTHON_PATH
+    cd $PYTHON_PATH/bin/ && sed -i "s+/usr/lib/pyenv/versions/$PYTHON_VERSION/+$PYTHON_PATH/+g" * ;\
+    # delete binary "duplicates" and replace them with symlinks
+    # this also optimizes space since they are actually the same binary
+    rm -f $PYTHON_PATH/bin/python$PYTHON_MAJOR_VERSION \
+          $PYTHON_PATH/bin/python$PYTHON_MINOR_VERSION \
+          $PYTHON_PATH/bin/python$PYTHON_MAJOR_VERSION-config \
+          $PYTHON_PATH/bin/python$PYTHON_MINOR_VERSION-config ;\
+    ln -sf $PYTHON_PATH/bin/python $PYTHON_PATH/bin/python$PYTHON_MAJOR_VERSION ;\
+    ln -sf $PYTHON_PATH/bin/python $PYTHON_PATH/bin/python$PYTHON_MINOR_VERSION ;\
+    ln -sf $PYTHON_PATH/bin/python-config $PYTHON_PATH/bin/python$PYTHON_MAJOR_VERSION-config ;\
+    ln -sf $PYTHON_PATH/bin/python-config $PYTHON_PATH/bin/python$PYTHON_MINOR_VERSION-config ;\
+    # delete files to to reduce container size
+    # tips taken from main python docker repo
+    find /usr/lib/python$PYTHON_VERSION -depth \( -name '*.pyo' -o -name '*.pyc' -o -name 'test' -o -name 'tests' \) -exec rm -rf '{}' + ;\
+
+    # remove build dependencies and any leftover apk cache
+    apk del --no-cache --purge .build-deps ;\
+    rm -rf /var/cache/apk/*
 
 # Copy in the entrypoint script -- this installs prerequisites on container start.
 COPY entrypoint.sh /entrypoint.sh

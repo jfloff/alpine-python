@@ -41,7 +41,7 @@ A small Python Docker image based on [Alpine Linux](http://alpinelinux.org/).
 - `onbuild` images install the `requirements.txt` of your project from the get go. This allows you to cache your requirements right in the build. _Make sure you are in the same directory of your `requirements.txt` file_.
 
 ## Why?
-The default docker python images are too [big](https://github.com/docker-library/python/issues/45), much larger than they need to be. Hence I built this simple image based on [docker-alpine](https://github.com/gliderlabs/docker-alpine), that has everything needed for the most common python projects - including `python3-dev` (which is not common in most minimal alpine python packages).
+The default docker python images are too [big](https://github.com/docker-library/python/issues/45), much larger than they need to be. Hence I built this simple image based on [docker-alpine](https://github.com/gliderlabs/docker-alpine), that has everything needed for the most common python projects - including `python-dev` (which is not common in most minimal alpine python packages).
 
 |REPOSITORY|TAG|SIZE|
 |-|-|-|
@@ -55,7 +55,7 @@ The default docker python images are too [big](https://github.com/docker-library
 |jfloff/alpine-python|recent-slim|55.7MB|
 |python|3.6-slim|156MB|
 ||||
-|jfloff/alpine-python|recent|239MB|
+|jfloff/alpine-python|recent|268MB|
 |python|3.6|692MB|
 |python|3.6-alpine|92.1MB|
 
@@ -198,6 +198,18 @@ You can also access `bash` inside the container:
 ```shell
 docker run --rm -ti jfloff/alpine-python:2.7-slim bash
 ```
+
+## Ecosystem
+
+These are some of the images that use `jfloff/alpine-python` as base image. *If you have another image that uses this as base image, please submit an issue or PR for it to be added. Image has to be published on Docker Hub.*
+
+- **[jfloff/alscipy](https://github.com/jfloff/docker-alscipy)** [![Docker Stars](https://img.shields.io/docker/stars/jfloff/alscipy.svg)][alscipy-hub] [![Docker Pulls](https://img.shields.io/docker/pulls/jfloff/alscipy.svg)][alscipy-hub] : image with common packages for Science in Alpine Python.
+
+
+[alscipy-hub]: https://hub.docker.com/r/jfloff/alscipy/
+
+
+
 
 ## License
 The code in this repository, unless otherwise noted, is MIT licensed. See the `LICENSE` file in this repository.

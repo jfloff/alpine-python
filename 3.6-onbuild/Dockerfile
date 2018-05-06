@@ -2,7 +2,7 @@ FROM alpine:3.7
 
 # VERSIONS
 ENV ALPINE_VERSION=3.7 \
-    PYTHON_VERSION=2.7.14
+    PYTHON_VERSION=3.6.5
 
 # PATHS
 ENV PYTHON_PATH=/usr/lib/python$PYTHON_VERSION \
@@ -83,6 +83,18 @@ RUN set -ex ;\
     # remove build dependencies and any leftover apk cache
     apk del --no-cache --purge .build-deps ;\
     rm -rf /var/cache/apk/*
+
+# Copy in the entrypoint script -- this installs prerequisites on container start.
+COPY entrypoint.sh /entrypoint.sh
+
+# install requirements
+# this way when you build you won't need to install again
+# and since COPY is cached we don't need to wait
+ONBUILD COPY requirements.txt /tmp/requirements.txt
+
+# Run the dependencies installer and then allow it to be run again if needed.
+ONBUILD RUN /entrypoint.sh -r /tmp/requirements.txt
+ONBUILD RUN rm -f /requirements.installed
 
 # since we will be "always" mounting the volume, we can set this up
 ENTRYPOINT ["/usr/bin/dumb-init"]
