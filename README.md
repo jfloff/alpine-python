@@ -32,12 +32,11 @@ A small Python Docker image based on [Alpine Linux](http://alpinelinux.org/).
 * **`2.7` ([2.7/Dockerfile](https://github.com/jfloff/alpine-python/blob/master/2.7/Dockerfile))**
 * **`2.7-onbuild` ([2.7-onbuild/Dockerfile](https://github.com/jfloff/alpine-python/blob/master/2.7-onbuild/Dockerfile))**
 * **`2.7-slim` ([2.7-slim/Dockerfile](https://github.com/jfloff/alpine-python/blob/master/2.7-slim/Dockerfile))**
-* **`recent` `latest` ([Dockerfile](https://github.com/jfloff/alpine-python/blob/master/recent/Dockerfile))**
-* **`recent-onbuild` ([Dockerfile](https://github.com/jfloff/alpine-python/blob/master/recent-onbuild/Dockerfile))**
-* **`recent-slim` ([Dockerfile](https://github.com/jfloff/alpine-python/blob/master/recent-slim/Dockerfile))**
+* **`3.6` `latest` ([Dockerfile](https://github.com/jfloff/alpine-python/blob/master/3.6/Dockerfile))**
+* **`3.6-onbuild` ([Dockerfile](https://github.com/jfloff/alpine-python/blob/master/3.6-onbuild/Dockerfile))**
+* **`3.6-slim` ([Dockerfile](https://github.com/jfloff/alpine-python/blob/master/3.6-slim/Dockerfile))**
 
 **NOTES:**
-- `recent` tags are the default `python3` version that Alpine current offers. **_Current recent is `3.6`_**.
 - `onbuild` images install the `requirements.txt` of your project from the get go. This allows you to cache your requirements right in the build. _Make sure you are in the same directory of your `requirements.txt` file_.
 
 ## Why?
@@ -45,17 +44,17 @@ The default docker python images are too [big](https://github.com/docker-library
 
 |REPOSITORY|TAG|SIZE|
 |-|-|-|
-|jfloff/alpine-python|2.7-slim|52.8MB|
+|jfloff/alpine-python|2.7-slim|55MB|
 |python|2.7-slim|138MB|
 ||||
 |jfloff/alpine-python|2.7|232MB|
 |python|2.7-alpine|75.3MB|
 |python|2.7|681MB|
 ||||
-|jfloff/alpine-python|recent-slim|55.7MB|
+|jfloff/alpine-python|3.6-slim|58.1MB|
 |python|3.6-slim|156MB|
 ||||
-|jfloff/alpine-python|recent|268MB|
+|jfloff/alpine-python|3.6|268MB|
 |python|3.6|692MB|
 |python|3.6-alpine|92.1MB|
 
@@ -83,7 +82,7 @@ docker run --rm -ti jfloff/alpine-python bash
 
 These images can be used to bake your dependencies into an image by extending the plain python images. To do so, create a custom `Dockerfile` like this:
 ```dockerfile
-FROM jfloff/alpine-python:recent-onbuild
+FROM jfloff/alpine-python:3.6-onbuild
 
 # for a flask server
 EXPOSE 5000

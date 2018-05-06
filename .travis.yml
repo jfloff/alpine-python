@@ -17,9 +17,9 @@ env:
     - version='2.7' type=''
     - version='2.7' type='-onbuild'
     - version='2.7' type='-slim'
-    - version='recent' type=''
-    - version='recent' type='-onbuild'
-    - version='recent' type='-slim'
+    - version='3.6' type=''
+    - version='3.6' type='-onbuild'
+    - version='3.6' type='-slim'
 
 before_script:
   - sudo docker pull $alpine_image
