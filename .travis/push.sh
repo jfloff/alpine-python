@@ -9,7 +9,7 @@ if [[ "$TRAVIS_BRANCH" == "master" ]]; then
     echo "Skipping Docker push, no credentials specified."
     PUSH=0
   else
-    sudo docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD ;
+    echo "$DOCKER_PASSWORD" | sudo docker login -u "$DOCKER_USERNAME" --password-stdin
   fi
 
     if [[ "$PUSH" -eq 1 ]]; then
