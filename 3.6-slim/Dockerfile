@@ -49,14 +49,12 @@ COPY entrypoint.sh /entrypoint.sh
 # These packages are not installed immediately, but are added at runtime or ONBUILD to shrink the image as much as possible. Notes:
 #   * build-base: used so we include the basic development packages (gcc)
 #   * linux-headers: commonly needed, and an unusual package name from Alpine.
-#   * musl: standard C library
 #   * lib6-compat: compatibility libraries for glibc
 #   * python3-dev: are used for gevent e.g.
 #   * git: to ease up clones of repos
 ENV BUILD_PACKAGES="\
   build-base \
   linux-headers \
-  musl \
   libc6-compat \
   python3-dev \
   git \
