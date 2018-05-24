@@ -193,10 +193,17 @@ CMD ["ajenti-panel"]
 #### Debugging
 The `/entrypoint.sh` script that manages dependencies in the slim images creates an empty file, `/requirements.installed`, telling the script not to install any dependencies after the container's first run. Removing this file will allow the script to work again if it is needed.
 
+You can use the `-x` flag to see everything the `/entrypoint.sh` script is doing.
+
 You can also access `bash` inside the container:
 ```shell
 docker run --rm -ti jfloff/alpine-python:2.7-slim bash
 ```
+
+#### Additional Arguments
+
+`-q`: silences output from `/entrypoint.sh`
+`-x`: turns on Bash debugging, making the output very verbose.
 
 ## Ecosystem
 
