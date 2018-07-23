@@ -28,6 +28,9 @@ ENV PACKAGES="\
     ca-certificates \
 "
 
+# PYTHON COMPILIATION OPTIONS
+ENV PYTHON_CONFIGURE_OPTS="--enable-shared"
+
 # PACKAGES needed to built python
 ENV PYTHON_BUILD_PACKAGES="\
     readline-dev \
