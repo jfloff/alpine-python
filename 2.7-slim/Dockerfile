@@ -1,6 +1,6 @@
-FROM alpine:3.7
+FROM alpine:3.8
 
-ENV ALPINE_VERSION=3.7
+ENV ALPINE_VERSION=3.8
 
 # These are always installed. Notes:
 #   * dumb-init: a proper init system for containers, to reap zombie children
