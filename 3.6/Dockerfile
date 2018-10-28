@@ -44,20 +44,20 @@ RUN set -ex ;\
     # replacing default repositories with edge ones
     echo "http://dl-cdn.alpinelinux.org/alpine/v$ALPINE_VERSION/community" >> /etc/apk/repositories ;\
     echo "http://dl-cdn.alpinelinux.org/alpine/v$ALPINE_VERSION/main" >> /etc/apk/repositories ;\
-
+    #
     # Add the packages, with a CDN-breakage fallback if needed
     apk add --no-cache $PACKAGES || \
         (sed -i -e 's/dl-cdn/dl-4/g' /etc/apk/repositories && apk add --no-cache $PACKAGES) ;\
     # Add packages just for the python build process with a CDN-breakage fallback if needed
     apk add --no-cache --virtual .build-deps $PYTHON_BUILD_PACKAGES || \
         (sed -i -e 's/dl-cdn/dl-4/g' /etc/apk/repositories && apk add --no-cache --virtual .build-deps $PYTHON_BUILD_PACKAGES) ;\
-
+    #
     # turn back the clock -- so hacky!
     echo "http://dl-cdn.alpinelinux.org/alpine/v$ALPINE_VERSION/main/" > /etc/apk/repositories ;\
     # echo "@community http://dl-cdn.alpinelinux.org/alpine/v$ALPINE_VERSION/community" >> /etc/apk/repositories ;\
     # echo "@testing http://dl-cdn.alpinelinux.org/alpine/v$ALPINE_VERSION/testing" >> /etc/apk/repositories ;\
     # echo "@edge-main http://dl-cdn.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories ;\
-
+    #
     # use pyenv to download and compile specific python version
     git clone --depth 1 https://github.com/pyenv/pyenv /usr/lib/pyenv ;\
     PYENV_ROOT=/usr/lib/pyenv /usr/lib/pyenv/bin/pyenv install $PYTHON_VERSION ;\
@@ -79,7 +79,7 @@ RUN set -ex ;\
     # delete files to to reduce container size
     # tips taken from main python docker repo
     find /usr/lib/python$PYTHON_VERSION -depth \( -name '*.pyo' -o -name '*.pyc' -o -name 'test' -o -name 'tests' \) -exec rm -rf '{}' + ;\
-
+    #
     # remove build dependencies and any leftover apk cache
     apk del --no-cache --purge .build-deps ;\
     rm -rf /var/cache/apk/*
