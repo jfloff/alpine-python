@@ -26,6 +26,7 @@ ENV PACKAGES="\
     bash \
     git \
     ca-certificates \
+    libssl-1.0 \
 "
 
 # PACKAGES needed to built python
