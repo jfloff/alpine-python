@@ -79,6 +79,12 @@ RUN set -ex ;\
     # install
     GNU_ARCH="$(dpkg-architecture --query DEB_BUILD_GNU_TYPE)" ;\
     PYENV_ROOT=/usr/local/lib/pyenv CONFIGURE_OPTS="--build=$GNU_ARCH --enable-loadable-sqlite-extensions --enable-shared --with-system-expat --with-system-ffi --without-ensurepip" /usr/local/lib/pyenv/bin/pyenv install $PYTHON_VERSION ;\
+    # keep the needed so files
+    find /usr/local -type f -executable -not \( -name '*tkinter*' \) -exec scanelf --needed --nobanner --format '%n#p' '{}' ';' \
+        | tr ',' '\n' \
+        | sort -u \
+        | awk 'system("[ -e /usr/local/lib/" $1 " ]") == 0 { next } { print "so:" $1 }' \
+        | xargs -rt apk add --no-cache --virtual .python-rundeps ;\
     # delete everything from pyenv except the installed version
     # this throws an error but we ignore it
     find /usr/local/lib/pyenv/ -mindepth 1 -name versions -prune -o -exec rm -rf {} \; || true ;\
