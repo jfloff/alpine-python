@@ -7,25 +7,14 @@ ENV ALPINE_VERSION=3.8 \
 # PATHS
 ENV PYTHON_PATH=/usr/local/bin/ \
     PATH="/usr/local/lib/python$PYTHON_VERSION/bin/:${PATH}" \
-    # These are always installed.
+    # These are always installed. Notes:
     #   * dumb-init: a proper init system for containers, to reap zombie children
-    #   * musl: standard C library
-    #   * lib6-compat: compatibility libraries for glibc
-    #   * linux-headers: commonly needed, and an unusual package name from Alpine.
-    #   * build-base: used so we include the basic development packages (gcc)
-    #   * bash: so we can access /bin/bash
-    #   * git: to ease up clones of repos
+    #   * bash: For entrypoint, and debugging
     #   * ca-certificates: for SSL verification during Pip and easy_install
     PACKAGES="\
       dumb-init \
-      musl \
-      libc6-compat \
-      linux-headers \
-      build-base \
       bash \
-      git \
       ca-certificates \
-      libssl1.0 \
     " \
     # PACKAGES needed to built python
     PYTHON_BUILD_PACKAGES="\
@@ -53,6 +42,17 @@ ENV PYTHON_PATH=/usr/local/bin/ \
       util-linux-dev \
       xz-dev \
       zlib-dev \
+      git \
+    " \
+    # These packages are not installed immediately, but are added at runtime or ONBUILD to shrink the image as much as possible. Notes:
+    #   * build-base: used so we include the basic development packages (gcc)
+    #   * linux-headers: commonly needed, and an unusual package name from Alpine.
+    #   * lib6-compat: compatibility libraries for glibc
+    #   * git: to ease up clones of repos
+    BUILD_PACKAGES="\
+      build-base \
+      linux-headers \
+      libc6-compat \
       git \
     "
 
@@ -94,15 +94,9 @@ RUN set -ex ;\
 # Copy in the entrypoint script -- this installs prerequisites on container start.
 COPY entrypoint.sh /entrypoint.sh
 
-# install requirements
-# this way when you build you won't need to install again
-# and since COPY is cached we don't need to wait
-ONBUILD COPY requirements.txt /tmp/requirements.txt
-
-# Run the dependencies installer and then allow it to be run again if needed.
-ONBUILD RUN /entrypoint.sh -r /tmp/requirements.txt
-ONBUILD RUN rm -f /requirements.installed
-
-# since we will be "always" mounting the volume, we can set this up
-ENTRYPOINT ["/usr/bin/dumb-init"]
-CMD ["python"]
+# This script installs APK and Pip prerequisites on container start, or ONBUILD. Notes:
+#   * Reads the -a flags and /apk-requirements.txt for install requests
+#   * Reads the -b flags and /build-requirements.txt for build packages -- removed when build is complete
+#   * Reads the -p flags and /requirements.txt for Pip packages
+#   * Reads the -r flag to specify a different file path for /requirements.txt
+ENTRYPOINT ["/usr/bin/dumb-init", "bash", "/entrypoint.sh"]

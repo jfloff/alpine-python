@@ -11,20 +11,23 @@ A small Python Docker image based on [Alpine Linux](http://alpinelinux.org/).
 
 <!-- MDTOC maxdepth:6 firsth1:0 numbering:0 flatten:0 bullets:1 updateOnSave:1 -->
 
-- [Supported tags](#supported-tags)
-- [Why?](#why)
-- [Details](#details)
-- [Usage](#usage)
-- [Usage of onbuild images](#usage-of-onbuild-images)
-- [Usage of slim images](#usage-of-slim-images)
-   - [Via `docker run`](#via-docker-run)
-   - [Pip Dependencies](#pip-dependencies)
-   - [Run-Time Dependencies](#run-time-dependencies)
-   - [Build-Time Dependencies](#build-time-dependencies)
-   - [Creating Images](#creating-images)
-   - [Debugging](#debugging)
-- [License](#license)
-- [TODO](#todo)
+- [alpine-python](#alpine-python)
+  - [Supported tags](#supported-tags)
+  - [Why?](#why)
+  - [Details](#details)
+  - [Usage](#usage)
+  - [Usage of `onbuild` images](#usage-of-onbuild-images)
+  - [Usage of `slim` images](#usage-of-slim-images)
+      - [Via `docker run`](#via-docker-run)
+      - [Pip Dependencies](#pip-dependencies)
+      - [Run-Time Dependencies](#run-time-dependencies)
+      - [Build-Time Dependencies](#build-time-dependencies)
+      - [Creating Images](#creating-images)
+      - [Debugging](#debugging)
+      - [Additional Arguments](#additional-arguments)
+  - [Ecosystem](#ecosystem)
+  - [License](#license)
+  - [TODO](#todo)
 
 <!-- /MDTOC -->
 
@@ -44,19 +47,26 @@ The default docker python images are too [big](https://github.com/docker-library
 
 |REPOSITORY|TAG|SIZE|
 |-|-|-|
-|jfloff/alpine-python|2.7-slim|55MB|
-|python|2.7-slim|138MB|
+|jfloff/alpine-python|2.7-slim|58.8MB|
+|python|2.7-slim|120MB|
+|python|2.7-alpine|61.2MB|
 ||||
-|jfloff/alpine-python|2.7|232MB|
-|python|2.7-alpine|75.3MB|
-|python|2.7|681MB|
+|jfloff/alpine-python|2.7|233MB|
+|python|2.7|912MB|
 ||||
-|jfloff/alpine-python|3.6-slim|58.1MB|
-|python|3.6-slim|156MB|
+|jfloff/alpine-python|3.6-slim|75MB|
+|python|3.6-slim|138MB|
+|python|3.6-alpine|79MB|
 ||||
-|jfloff/alpine-python|3.6|268MB|
-|python|3.6|692MB|
-|python|3.6-alpine|92.1MB|
+|jfloff/alpine-python|3.6|249MB|
+|python|3.6|922MB|
+||||
+|jfloff/alpine-python|3.7-slim|79.1MB|
+|python|3.7-slim|86.7MB|
+|python|3.7-alpine|143MB|
+||||
+|jfloff/alpine-python|3.7|253MB|
+|python|3.7|927MB|
 
 Perhaps this could be even smaller, but I'm not an Alpine guru. **Feel free to post a PR.**
 

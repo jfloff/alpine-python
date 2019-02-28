@@ -5,38 +5,56 @@ ENV ALPINE_VERSION=3.8 \
     PYTHON_VERSION=2.7.15
 
 # PATHS
-ENV PYTHON_PATH=/usr/lib/python$PYTHON_VERSION \
-    PATH="/usr/lib/python$PYTHON_VERSION/bin/:${PATH}"
-
-# PACKAGES
-#   * dumb-init: a proper init system for containers, to reap zombie children
-#   * musl: standard C library
-#   * lib6-compat: compatibility libraries for glibc
-#   * linux-headers: commonly needed, and an unusual package name from Alpine.
-#   * build-base: used so we include the basic development packages (gcc)
-#   * bash: so we can access /bin/bash
-#   * git: to ease up clones of repos
-#   * ca-certificates: for SSL verification during Pip and easy_install
-ENV PACKAGES="\
-    dumb-init \
-    musl \
-    libc6-compat \
-    linux-headers \
-    build-base \
-    bash \
-    git \
-    ca-certificates \
-    libssl1.0 \
-"
-
-# PACKAGES needed to built python
-ENV PYTHON_BUILD_PACKAGES="\
-    readline-dev \
-    zlib-dev \
-    bzip2-dev \
-    sqlite-dev \
-    openssl-dev \
-"
+ENV PYTHON_PATH=/usr/local/bin/ \
+    PATH="/usr/local/lib/python$PYTHON_VERSION/bin/:${PATH}" \
+    # These are always installed.
+    #   * dumb-init: a proper init system for containers, to reap zombie children
+    #   * musl: standard C library
+    #   * lib6-compat: compatibility libraries for glibc
+    #   * linux-headers: commonly needed, and an unusual package name from Alpine.
+    #   * build-base: used so we include the basic development packages (gcc)
+    #   * bash: so we can access /bin/bash
+    #   * git: to ease up clones of repos
+    #   * ca-certificates: for SSL verification during Pip and easy_install
+    PACKAGES="\
+      dumb-init \
+      musl \
+      libc6-compat \
+      linux-headers \
+      build-base \
+      bash \
+      git \
+      ca-certificates \
+      libssl1.0 \
+    " \
+    # PACKAGES needed to built python
+    PYTHON_BUILD_PACKAGES="\
+      bzip2-dev \
+      coreutils \
+      dpkg-dev dpkg \
+      expat-dev \
+      findutils \
+      gcc \
+      gdbm-dev \
+      libc-dev \
+      libffi-dev \
+      libnsl-dev \
+      libtirpc-dev \
+      linux-headers \
+      make \
+      ncurses-dev \
+      libressl-dev \
+      pax-utils \
+      readline-dev \
+      sqlite-dev \
+      tcl-dev \
+      tk \
+      tk-dev \
+      util-linux-dev \
+      xz-dev \
+      zlib-dev \
+      git \
+    "
 
 RUN set -ex ;\
     # find MAJOR and MINOR python versions based on $PYTHON_VERSION
@@ -57,26 +75,18 @@ RUN set -ex ;\
     # echo "@testing http://dl-cdn.alpinelinux.org/alpine/v$ALPINE_VERSION/testing" >> /etc/apk/repositories ;\
     # echo "@edge-main http://dl-cdn.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories ;\
     # use pyenv to download and compile specific python version
-    git clone --depth 1 https://github.com/pyenv/pyenv /usr/lib/pyenv ;\
-    PYENV_ROOT=/usr/lib/pyenv /usr/lib/pyenv/bin/pyenv install $PYTHON_VERSION ;\
-    # move specific version to correct path delete pyenv, no longer needed
-    mv /usr/lib/pyenv/versions/$PYTHON_VERSION/ $PYTHON_PATH ;\
-    rm -rfv /usr/lib/pyenv ;\
-    # change the path on the header of every file from PYENV_ROOT to PYTHON_PATH
-    cd $PYTHON_PATH/bin/ && sed -i "s+/usr/lib/pyenv/versions/$PYTHON_VERSION/+$PYTHON_PATH/+g" * ;\
-    # delete binary "duplicates" and replace them with symlinks
-    # this also optimizes space since they are actually the same binary
-    rm -f $PYTHON_PATH/bin/python$PYTHON_MAJOR_VERSION \
-          $PYTHON_PATH/bin/python$PYTHON_MINOR_VERSION \
-          $PYTHON_PATH/bin/python$PYTHON_MAJOR_VERSION-config \
-          $PYTHON_PATH/bin/python$PYTHON_MINOR_VERSION-config ;\
-    ln -sf $PYTHON_PATH/bin/python $PYTHON_PATH/bin/python$PYTHON_MAJOR_VERSION ;\
-    ln -sf $PYTHON_PATH/bin/python $PYTHON_PATH/bin/python$PYTHON_MINOR_VERSION ;\
-    ln -sf $PYTHON_PATH/bin/python-config $PYTHON_PATH/bin/python$PYTHON_MAJOR_VERSION-config ;\
-    ln -sf $PYTHON_PATH/bin/python-config $PYTHON_PATH/bin/python$PYTHON_MINOR_VERSION-config ;\
+    git clone --depth 1 https://github.com/pyenv/pyenv /usr/local/lib/pyenv ;\
+    # install
+    GNU_ARCH="$(dpkg-architecture --query DEB_BUILD_GNU_TYPE)" ;\
+    PYENV_ROOT=/usr/local/lib/pyenv CONFIGURE_OPTS="--build=$GNU_ARCH --enable-loadable-sqlite-extensions --enable-shared --with-system-expat --with-system-ffi --without-ensurepip" /usr/local/lib/pyenv/bin/pyenv install $PYTHON_VERSION ;\
+    # delete everything from pyenv except the installed version
+    # this throws an error but we ignore it
+    find /usr/local/lib/pyenv/ -mindepth 1 -name versions -prune -o -exec rm -rf {} \; || true ;\
     # delete files to to reduce container size
     # tips taken from main python docker repo
-    find /usr/lib/python$PYTHON_VERSION -depth \( -name '*.pyo' -o -name '*.pyc' -o -name 'test' -o -name 'tests' \) -exec rm -rf '{}' + ;\
+    find /usr/local/lib/pyenv/versions/$PYTHON_VERSION/ -depth \( -name '*.pyo' -o -name '*.pyc' -o -name 'test' -o -name 'tests' \) -exec rm -rf '{}' + ;\
+    # symlink the binaries
+    ln -s /usr/local/lib/pyenv/versions/$PYTHON_VERSION/bin/* $PYTHON_PATH ;\
     # remove build dependencies and any leftover apk cache
     apk del --no-cache --purge .build-deps ;\
     rm -rf /var/cache/apk/*

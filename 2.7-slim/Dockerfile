@@ -1,60 +1,97 @@
 FROM alpine:3.8
 
-ENV ALPINE_VERSION=3.8
+# VERSIONS
+ENV ALPINE_VERSION=3.8 \
+    PYTHON_VERSION=2.7.15
 
-# These are always installed. Notes:
-#   * dumb-init: a proper init system for containers, to reap zombie children
-#   * bash: For entrypoint, and debugging
-#   * ca-certificates: for SSL verification during Pip and easy_install
-#   * python: the binaries themselves
-#   * py-setuptools: required only in major version 2, installs easy_install so we can install Pip.
-ENV PACKAGES="\
-  dumb-init \
-  bash \
-  ca-certificates \
-  python2 \
-  py-setuptools \
-"
+ENV PYTHON_PATH=/usr/local/bin/ \
+    PATH="/usr/local/lib/python$PYTHON_VERSION/bin/:${PATH}" \
+    # These are always installed. Notes:
+    #   * dumb-init: a proper init system for containers, to reap zombie children
+    #   * bash: For entrypoint, and debugging
+    #   * ca-certificates: for SSL verification during Pip and easy_install
+    PACKAGES="\
+      dumb-init \
+      bash \
+      ca-certificates \
+    " \
+    # PACKAGES needed to built python
+    PYTHON_BUILD_PACKAGES="\
+      bzip2-dev \
+      coreutils \
+      dpkg-dev dpkg \
+      expat-dev \
+      findutils \
+      gcc \
+      gdbm-dev \
+      libc-dev \
+      libffi-dev \
+      libnsl-dev \
+      libtirpc-dev \
+      linux-headers \
+      make \
+      ncurses-dev \
+      libressl-dev \
+      pax-utils \
+      readline-dev \
+      sqlite-dev \
+      tcl-dev \
+      tk \
+      tk-dev \
+      util-linux-dev \
+      xz-dev \
+      zlib-dev \
+      git \
+    " \
+    # These packages are not installed immediately, but are added at runtime or ONBUILD to shrink the image as much as possible. Notes:
+    #   * build-base: used so we include the basic development packages (gcc)
+    #   * linux-headers: commonly needed, and an unusual package name from Alpine.
+    #   * lib6-compat: compatibility libraries for glibc
+    #   * git: to ease up clones of repos
+    BUILD_PACKAGES="\
+      build-base \
+      linux-headers \
+      libc6-compat \
+      git \
+    "
 
-RUN echo \
-  # replacing default repositories with edge ones
-  && echo "http://dl-cdn.alpinelinux.org/alpine/v$ALPINE_VERSION/testing" > /etc/apk/repositories \
-  && echo "http://dl-cdn.alpinelinux.org/alpine/v$ALPINE_VERSION/community" >> /etc/apk/repositories \
-  && echo "http://dl-cdn.alpinelinux.org/alpine/v$ALPINE_VERSION/main" >> /etc/apk/repositories \
-  # Add the packages, with a CDN-breakage fallback if needed
-  && apk add --no-cache $PACKAGES || \
-    (sed -i -e 's/dl-cdn/dl-4/g' /etc/apk/repositories && apk add --no-cache $PACKAGES) \
-  # turn back the clock -- so hacky!
-  && echo "http://dl-cdn.alpinelinux.org/alpine/v$ALPINE_VERSION/main/" > /etc/apk/repositories \
-  # && echo "@community http://dl-cdn.alpinelinux.org/alpine/v$ALPINE_VERSION/community" >> /etc/apk/repositories \
-  # && echo "@testing http://dl-cdn.alpinelinux.org/alpine/v$ALPINE_VERSION/testing" >> /etc/apk/repositories \
-  # && echo "@edge-main http://dl-cdn.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories \
-  # make some useful symlinks that are expected to exist
-  && if [[ ! -e /usr/bin/python ]];        then ln -sf /usr/bin/python2.7 /usr/bin/python; fi \
-  && if [[ ! -e /usr/bin/python-config ]]; then ln -sf /usr/bin/python2.7-config /usr/bin/python-config; fi \
-  && if [[ ! -e /usr/bin/easy_install ]];  then ln -sf /usr/bin/easy_install-2.7 /usr/bin/easy_install; fi \
-  # Install and upgrade Pip
-  && easy_install pip \
-  && pip install --upgrade pip \
-  && if [[ ! -e /usr/bin/pip ]]; then ln -sf /usr/bin/pip2.7 /usr/bin/pip; fi \
-  && echo
+RUN set -ex ;\
+    # find MAJOR and MINOR python versions based on $PYTHON_VERSION
+    export PYTHON_MAJOR_VERSION=$(echo "${PYTHON_VERSION}" | rev | cut -d"." -f3-  | rev) ;\
+    export PYTHON_MINOR_VERSION=$(echo "${PYTHON_VERSION}" | rev | cut -d"." -f2-  | rev) ;\
+    # replacing default repositories with edge ones
+    echo "http://dl-cdn.alpinelinux.org/alpine/v$ALPINE_VERSION/community" >> /etc/apk/repositories ;\
+    echo "http://dl-cdn.alpinelinux.org/alpine/v$ALPINE_VERSION/main" >> /etc/apk/repositories ;\
+    # Add the packages, with a CDN-breakage fallback if needed
+    apk add --no-cache $PACKAGES || \
+        (sed -i -e 's/dl-cdn/dl-4/g' /etc/apk/repositories && apk add --no-cache $PACKAGES) ;\
+    # Add packages just for the python build process with a CDN-breakage fallback if needed
+    apk add --no-cache --virtual .build-deps $PYTHON_BUILD_PACKAGES || \
+        (sed -i -e 's/dl-cdn/dl-4/g' /etc/apk/repositories && apk add --no-cache --virtual .build-deps $PYTHON_BUILD_PACKAGES) ;\
+    # turn back the clock -- so hacky!
+    echo "http://dl-cdn.alpinelinux.org/alpine/v$ALPINE_VERSION/main/" > /etc/apk/repositories ;\
+    # echo "@community http://dl-cdn.alpinelinux.org/alpine/v$ALPINE_VERSION/community" >> /etc/apk/repositories ;\
+    # echo "@testing http://dl-cdn.alpinelinux.org/alpine/v$ALPINE_VERSION/testing" >> /etc/apk/repositories ;\
+    # echo "@edge-main http://dl-cdn.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories ;\
+    # use pyenv to download and compile specific python version
+    git clone --depth 1 https://github.com/pyenv/pyenv /usr/local/lib/pyenv ;\
+    # install
+    GNU_ARCH="$(dpkg-architecture --query DEB_BUILD_GNU_TYPE)" ;\
+    PYENV_ROOT=/usr/local/lib/pyenv CONFIGURE_OPTS="--build=$GNU_ARCH --enable-loadable-sqlite-extensions --enable-shared --with-system-expat --with-system-ffi --without-ensurepip" /usr/local/lib/pyenv/bin/pyenv install $PYTHON_VERSION ;\
+    # delete everything from pyenv except the installed version
+    # this throws an error but we ignore it
+    find /usr/local/lib/pyenv/ -mindepth 1 -name versions -prune -o -exec rm -rf {} \; || true ;\
+    # delete files to to reduce container size
+    # tips taken from main python docker repo
+    find /usr/local/lib/pyenv/versions/$PYTHON_VERSION/ -depth \( -name '*.pyo' -o -name '*.pyc' -o -name 'test' -o -name 'tests' \) -exec rm -rf '{}' + ;\
+    # symlink the binaries
+    ln -s /usr/local/lib/pyenv/versions/$PYTHON_VERSION/bin/* $PYTHON_PATH ;\
+    # remove build dependencies and any leftover apk cache
+    apk del --no-cache --purge .build-deps ;\
+    rm -rf /var/cache/apk/*
 
 # Copy in the entrypoint script -- this installs prerequisites on container start.
 COPY entrypoint.sh /entrypoint.sh
-
-# These packages are not installed immediately, but are added at runtime or ONBUILD to shrink the image as much as possible. Notes:
-#   * build-base: used so we include the basic development packages (gcc)
-#   * linux-headers: commonly needed, and an unusual package name from Alpine.
-#   * lib6-compat: compatibility libraries for glibc
-#   * python2-dev: are used for gevent e.g.
-#   * git: to ease up clones of repos
-ENV BUILD_PACKAGES="\
-  build-base \
-  linux-headers \
-  libc6-compat \
-  python2-dev \
-  git \
-"
 
 # This script installs APK and Pip prerequisites on container start, or ONBUILD. Notes:
 #   * Reads the -a flags and /apk-requirements.txt for install requests
