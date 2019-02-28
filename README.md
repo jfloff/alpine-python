@@ -27,7 +27,6 @@ A small Python Docker image based on [Alpine Linux](http://alpinelinux.org/).
       - [Additional Arguments](#additional-arguments)
   - [Ecosystem](#ecosystem)
   - [License](#license)
-  - [TODO](#todo)
 
 <!-- /MDTOC -->
 
@@ -229,8 +228,3 @@ These are some of the images that use `jfloff/alpine-python` as base image. *If 
 
 ## License
 The code in this repository, unless otherwise noted, is MIT licensed. See the `LICENSE` file in this repository.
-
-## TODO
-At this moment with Alpine APK we are not able to install previous packages versions, i.e., its virtually impossible to provide multiple versions of Python. This is limits us to only provide the latest `python3` package that's available in Alpine APK.
-
-Ideally we would support a solution like the official `python` images does (see example [here](https://github.com/docker-library/python/blob/master/3.4/alpine/Dockerfile)), where the specific Python version is downloaded and compiled. Yet, I don't want to follow the pitfall of copy-pasting that solution, otherwise we end up with almost the same image. ***I'm requesting PRs on this issue, either by optimizing official solution, or other.***
