@@ -5,7 +5,7 @@ ENV ALPINE_VERSION=3.8 \
     PYTHON_VERSION=2.7.15
 
 ENV PYTHON_PATH=/usr/local/bin/ \
-    PATH="/usr/local/lib/python$PYTHON_VERSION/bin/:${PATH}" \
+    PATH="/usr/local/lib/pyenv/versions/$PYTHON_VERSION/bin/:${PATH}" \
     # These are always installed. Notes:
     #   * dumb-init: a proper init system for containers, to reap zombie children
     #   * bash: For entrypoint, and debugging
@@ -90,8 +90,6 @@ RUN set -ex ;\
     # delete files to to reduce container size
     # tips taken from main python docker repo
     find /usr/local/lib/pyenv/versions/$PYTHON_VERSION/ -depth \( -name '*.pyo' -o -name '*.pyc' -o -name 'test' -o -name 'tests' \) -exec rm -rf '{}' + ;\
-    # symlink the binaries
-    ln -s /usr/local/lib/pyenv/versions/$PYTHON_VERSION/bin/* $PYTHON_PATH ;\
     # remove build dependencies and any leftover apk cache
     apk del --no-cache --purge .build-deps ;\
     rm -rf /var/cache/apk/*
