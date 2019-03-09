@@ -6,7 +6,7 @@ ENV ALPINE_VERSION=3.8 \
 
 # PATHS
 ENV PYTHON_PATH=/usr/local/bin/ \
-    PATH="/usr/local/lib/pyenv/versions/$PYTHON_VERSION/bin/:${PATH}" \
+    PATH="/usr/local/lib/python$PYTHON_VERSION/bin/:${PATH}" \
     # These are always installed. Notes:
     #   * dumb-init: a proper init system for containers, to reap zombie children
     #   * bash: For entrypoint, and debugging
@@ -79,11 +79,13 @@ RUN set -ex ;\
     # install
     GNU_ARCH="$(dpkg-architecture --query DEB_BUILD_GNU_TYPE)" ;\
     PYENV_ROOT=/usr/local/lib/pyenv CONFIGURE_OPTS="--build=$GNU_ARCH --enable-loadable-sqlite-extensions --enable-shared --with-system-expat --with-system-ffi --without-ensurepip" /usr/local/lib/pyenv/bin/pyenv install $PYTHON_VERSION ;\
-    # keep the needed so files
+    # keep the needed .so files
+    # ignore libpython - that one comes from the pyenv instalation
     find /usr/local -type f -executable -not \( -name '*tkinter*' \) -exec scanelf --needed --nobanner --format '%n#p' '{}' ';' \
         | tr ',' '\n' \
         | sort -u \
         | awk 'system("[ -e /usr/local/lib/" $1 " ]") == 0 { next } { print "so:" $1 }' \
+        | grep -vE '*libpython*' \
         | xargs -rt apk add --no-cache --virtual .python-rundeps ;\
     # delete everything from pyenv except the installed version
     # this throws an error but we ignore it
@@ -91,6 +93,8 @@ RUN set -ex ;\
     # delete files to to reduce container size
     # tips taken from main python docker repo
     find /usr/local/lib/pyenv/versions/$PYTHON_VERSION/ -depth \( -name '*.pyo' -o -name '*.pyc' -o -name 'test' -o -name 'tests' \) -exec rm -rf '{}' + ;\
+    # symlink the binaries
+    ln -s /usr/local/lib/pyenv/versions/$PYTHON_VERSION/bin/* $PYTHON_PATH ;\
     # remove build dependencies and any leftover apk cache
     apk del --no-cache --purge .build-deps ;\
     rm -rf /var/cache/apk/*
