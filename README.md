@@ -34,9 +34,12 @@ A small Python Docker image based on [Alpine Linux](http://alpinelinux.org/).
 * **`2.7` ([2.7/Dockerfile](https://github.com/jfloff/alpine-python/blob/master/2.7/Dockerfile))**
 * **`2.7-onbuild` ([2.7-onbuild/Dockerfile](https://github.com/jfloff/alpine-python/blob/master/2.7-onbuild/Dockerfile))**
 * **`2.7-slim` ([2.7-slim/Dockerfile](https://github.com/jfloff/alpine-python/blob/master/2.7-slim/Dockerfile))**
-* **`3.6` `latest` ([Dockerfile](https://github.com/jfloff/alpine-python/blob/master/3.6/Dockerfile))**
+* **`3.6` ([Dockerfile](https://github.com/jfloff/alpine-python/blob/master/3.6/Dockerfile))**
 * **`3.6-onbuild` ([Dockerfile](https://github.com/jfloff/alpine-python/blob/master/3.6-onbuild/Dockerfile))**
 * **`3.6-slim` ([Dockerfile](https://github.com/jfloff/alpine-python/blob/master/3.6-slim/Dockerfile))**
+* **`3.7` `latest` ([Dockerfile](https://github.com/jfloff/alpine-python/blob/master/3.7/Dockerfile))**
+* **`3.7-onbuild` `latest-onbuild` ([Dockerfile](https://github.com/jfloff/alpine-python/blob/master/3.7-onbuild/Dockerfile))**
+* **`3.7-slim` `latest-slim` ([Dockerfile](https://github.com/jfloff/alpine-python/blob/master/3.7-slim/Dockerfile))**
 
 **NOTES:**
 - `onbuild` images install the `requirements.txt` of your project from the get go. This allows you to cache your requirements right in the build. _Make sure you are in the same directory of your `requirements.txt` file_.
@@ -46,25 +49,25 @@ The default docker python images are too [big](https://github.com/docker-library
 
 |REPOSITORY|TAG|SIZE|
 |-|-|-|
-|jfloff/alpine-python|2.7-slim|58.8MB|
+|jfloff/alpine-python|2.7-slim|58.9MB|
 |python|2.7-slim|120MB|
 |python|2.7-alpine|61.2MB|
 ||||
 |jfloff/alpine-python|2.7|233MB|
 |python|2.7|912MB|
 ||||
-|jfloff/alpine-python|3.6-slim|75MB|
+|jfloff/alpine-python|3.6-slim|75.1MB|
 |python|3.6-slim|138MB|
 |python|3.6-alpine|79MB|
 ||||
 |jfloff/alpine-python|3.6|249MB|
 |python|3.6|922MB|
 ||||
-|jfloff/alpine-python|3.7-slim|79.1MB|
+|jfloff/alpine-python|3.7-slim|79.2MB|
 |python|3.7-slim|86.7MB|
 |python|3.7-alpine|143MB|
 ||||
-|jfloff/alpine-python|3.7|253MB|
+|jfloff/alpine-python|3.7|254MB|
 |python|3.7|927MB|
 
 Perhaps this could be even smaller, but I'm not an Alpine guru. **Feel free to post a PR.**

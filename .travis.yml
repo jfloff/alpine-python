@@ -11,8 +11,8 @@ before_install:
 env:
   global:
     - alpine_image='alpine:3.8'
-    - latest='recent'
     - repo='jfloff/alpine-python'
+    - latest='3.7'
   matrix:
     - version='2.7' type=''
     - version='2.7' type='-onbuild'
