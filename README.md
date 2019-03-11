@@ -49,26 +49,30 @@ The default docker python images are too [big](https://github.com/docker-library
 
 |REPOSITORY|TAG|SIZE|
 |-|-|-|
-|jfloff/alpine-python|2.7-slim|58.9MB|
+|jfloff/alpine-python|2.7-slim|62.4MB|
 |python|2.7-slim|120MB|
 |python|2.7-alpine|61.2MB|
 ||||
-|jfloff/alpine-python|2.7|233MB|
+|jfloff/alpine-python|2.7|236MB|
 |python|2.7|912MB|
 ||||
-|jfloff/alpine-python|3.6-slim|75.1MB|
+|jfloff/alpine-python|3.6-slim|78.8MB|
 |python|3.6-slim|138MB|
 |python|3.6-alpine|79MB|
 ||||
-|jfloff/alpine-python|3.6|249MB|
+|jfloff/alpine-python|3.6|253MB|
 |python|3.6|922MB|
 ||||
-|jfloff/alpine-python|3.7-slim|79.2MB|
+|jfloff/alpine-python|3.7-slim|82.9MB|
 |python|3.7-slim|86.7MB|
 |python|3.7-alpine|143MB|
 ||||
-|jfloff/alpine-python|3.7|254MB|
+|jfloff/alpine-python|3.7|257MB|
 |python|3.7|927MB|
+
+2.7-slim        62.4MB
+2.7-onbuild     236MB
+2.7             236MB
 
 Perhaps this could be even smaller, but I'm not an Alpine guru. **Feel free to post a PR.**
 
