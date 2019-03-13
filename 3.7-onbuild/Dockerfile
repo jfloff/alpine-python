@@ -6,7 +6,7 @@ ENV ALPINE_VERSION=3.8 \
 
 # PATHS
 ENV PYTHON_PATH=/usr/local/bin/ \
-    PATH="/usr/local/lib/python$PYTHON_VERSION/bin/:${PATH}" \
+    PATH="/usr/local/lib/python$PYTHON_VERSION/bin/:/usr/local/lib/pyenv/versions/$PYTHON_VERSION/bin:${PATH}" \
     # These are always installed.
     #   * dumb-init: a proper init system for containers, to reap zombie children
     #   * musl: standard C library
