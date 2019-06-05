@@ -26,6 +26,7 @@ ENV PYTHON_PATH=/usr/local/bin/ \
       git \
       ca-certificates \
       libssl1.0 \
+      tzdata \
     " \
     # PACKAGES needed to built python
     PYTHON_BUILD_PACKAGES="\
@@ -97,6 +98,8 @@ RUN set -ex ;\
     find /usr/local/lib/pyenv/versions/$PYTHON_VERSION/ -depth \( -name '*.pyo' -o -name '*.pyc' -o -name 'test' -o -name 'tests' \) -exec rm -rf '{}' + ;\
     # symlink the binaries
     ln -s /usr/local/lib/pyenv/versions/$PYTHON_VERSION/bin/* $PYTHON_PATH ;\
+    # set timezone info
+    ln -fs /usr/share/zoneinfo/Etc/UTC /etc/localtime ;\
     # remove build dependencies and any leftover apk cache
     apk del --no-cache --purge .build-deps ;\
     rm -rf /var/cache/apk/*
