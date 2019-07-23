@@ -222,10 +222,12 @@ docker run --rm -ti jfloff/alpine-python:2.7-slim bash
 These are some of the images that use `jfloff/alpine-python` as base image. *If you have another image that uses this as base image, please submit an issue or PR for it to be added. Image has to be published on Docker Hub.*
 
 - **[jfloff/alscipy](https://github.com/jfloff/docker-alscipy)** [![Docker Stars](https://img.shields.io/docker/stars/jfloff/alscipy.svg)][alscipy-hub] [![Docker Pulls](https://img.shields.io/docker/pulls/jfloff/alscipy.svg)][alscipy-hub] : image with common packages for Science in Alpine Python.
-- **[jfloff/pywfm](https://github.com/jfloff/pywfm)** [![Docker Stars](https://img.shields.io/docker/stars/jfloff/pywfm.svg)][pywfm-hub] [![Docker Pulls](https://img.shields.io/docker/pulls/jfloff/pywfm.svg)][pywfm-hub] : image from the python wrapper for Steffen Rendle's factorization machines library libFM.
+- **[jfloff/pywfm](https://github.com/jfloff/docker-pywfm)** [![Docker Stars](https://img.shields.io/docker/stars/jfloff/pywfm.svg)][pywfm-hub] [![Docker Pulls](https://img.shields.io/docker/pulls/jfloff/pywfm.svg)][pywfm-hub] : image from the python wrapper for Steffen Rendle's factorization machines library libFM.
+- **[bismuthfoundation/Bismuth-Docker](https://github.com/bismuthfoundation/Bismuth-Docker)** [![Docker Stars](https://img.shields.io/docker/stars/eggdrasyl/bismuth-node.svg)][busmuth-hub] [![Docker Pulls](https://img.shields.io/docker/pulls/eggdrasyl/bismuth-node.svg)][busmuth-hub] : node and associated services, from scratch crypto-currency with Python codebase.
 
 [alscipy-hub]: https://hub.docker.com/r/jfloff/alscipy/
-[pywfm-hub]: https://hub.docker.com/r/jfloff/alscipy/
+[pywfm-hub]: https://hub.docker.com/r/jfloff/pywfm/
+[busmuth-hub]: https://hub.docker.com/r/eggdrasyl/bismuth-node/
 
 
 
