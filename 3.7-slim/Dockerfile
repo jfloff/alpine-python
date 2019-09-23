@@ -104,7 +104,7 @@ RUN set -ex ;\
     apk del --no-cache --purge .build-deps ;\
     rm -rf /var/cache/apk/* ;\
     # set proper permission to run entrypoint script
-    chmod /entrypoint.sh a+x
+    chmod a+x /entrypoint.sh
 
 # This script installs APK and Pip prerequisites on container start, or ONBUILD. Notes:
 #   * Reads the -a flags and /apk-requirements.txt for install requests

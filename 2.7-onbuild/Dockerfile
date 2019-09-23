@@ -107,7 +107,7 @@ RUN set -ex ;\
     apk del --no-cache --purge .build-deps ;\
     rm -rf /var/cache/apk/* ;\
     # set proper permission to run entrypoint script
-    chmod /entrypoint.sh a+x
+    chmod a+x /entrypoint.sh
 
 # install requirements
 # this way when you build you won't need to install again
