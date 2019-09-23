@@ -136,7 +136,7 @@ if [[ ! -f /requirements.installed ]]; then
   apk del $APK_FLAGS $BUILD_PACKAGES "${BUILD_REQUIREMENTS[@]}"
 
   vlog "Installing APK requirements..."
-  apk add $APK_FLAGS $BUILD_PACKAGES "${APK_REQUIREMENTS[@]}"
+  apk add $APK_FLAGS "${APK_REQUIREMENTS[@]}"
 
   touch /requirements.installed
 else
