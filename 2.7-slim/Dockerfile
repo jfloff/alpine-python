@@ -55,6 +55,9 @@ ENV PYTHON_PATH=/usr/local/bin/ \
       git \
     "
 
+# Copy in the entrypoint script -- this installs prerequisites on container start.
+COPY entrypoint.sh /entrypoint.sh
+
 RUN set -ex ;\
     # find MAJOR and MINOR python versions based on $PYTHON_VERSION
     export PYTHON_MAJOR_VERSION=$(echo "${PYTHON_VERSION}" | rev | cut -d"." -f3-  | rev) ;\
@@ -98,10 +101,9 @@ RUN set -ex ;\
     ln -s /usr/local/lib/pyenv/versions/$PYTHON_VERSION/bin/* $PYTHON_PATH ;\
     # remove build dependencies and any leftover apk cache
     apk del --no-cache --purge .build-deps ;\
-    rm -rf /var/cache/apk/*
-
-# Copy in the entrypoint script -- this installs prerequisites on container start.
-COPY entrypoint.sh /entrypoint.sh
+    rm -rf /var/cache/apk/* ;\
+    # set proper permission to run entrypoint script
+    chmod /entrypoint.sh a+x
 
 # This script installs APK and Pip prerequisites on container start, or ONBUILD. Notes:
 #   * Reads the -a flags and /apk-requirements.txt for install requests
