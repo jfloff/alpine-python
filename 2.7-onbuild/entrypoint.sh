@@ -135,6 +135,9 @@ if [[ ! -f /requirements.installed ]]; then
   # Remove packages that were only required for build.
   apk del $APK_FLAGS $BUILD_PACKAGES "${BUILD_REQUIREMENTS[@]}"
 
+  vlog "Installing APK requirements..."
+  apk add $APK_FLAGS $BUILD_PACKAGES "${APK_REQUIREMENTS[@]}"
+
   touch /requirements.installed
 else
 	vlog "/requirements.installed file exists-- skipping requirements installs."
