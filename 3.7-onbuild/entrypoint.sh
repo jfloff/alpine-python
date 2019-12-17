@@ -12,7 +12,7 @@ VERBOSITY=1
 TMP_REQFILE='/tmp/requirements.txt'
 
 function usage () {
-	echo <<"EOF"
+	cat <<"EOF"
 Usage: $0 [-a -b -p -A -B -P -r -q -x] [--] <your command line>
  -a : APK requirement. Can be specified multiple times.
  -b : APK build requirement. These will be removed at the end to save space.
