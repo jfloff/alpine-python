@@ -1,8 +1,8 @@
-FROM alpine:3.8
+FROM alpine:3.11
 
 # VERSIONS
-ENV ALPINE_VERSION=3.8 \
-    PYTHON_VERSION=3.8.0
+ENV ALPINE_VERSION=3.11 \
+    PYTHON_VERSION=3.8.2
 
 # PATHS
 ENV PYTHON_PATH=/usr/local/bin/ \
@@ -25,7 +25,7 @@ ENV PYTHON_PATH=/usr/local/bin/ \
       bash \
       git \
       ca-certificates \
-      libssl1.0 \
+      libressl-dev \
       libffi-dev \
       tzdata \
     " \
