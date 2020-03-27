@@ -26,6 +26,7 @@ A small Python Docker image based on [Alpine Linux](http://alpinelinux.org/).
       - [Debugging](#debugging)
       - [Additional Arguments](#additional-arguments)
   - [Ecosystem](#ecosystem)
+  - [Contribution](#contribution)
   - [License](#license)
 
 <!-- /MDTOC -->
@@ -233,7 +234,8 @@ These are some of the images that use `jfloff/alpine-python` as base image. *If 
 [busmuth-hub]: https://hub.docker.com/r/eggdrasyl/bismuth-node/
 
 
-
+## Contribution
+Feel free to contribute with whatever you feel like this image is missing. There is also some changes that happen often like, updating Alpine or Python versions. Do not forget that this repo folders mirror **Python** version and **_not_** Alpine versions.
 
 ## License
 The code in this repository, unless otherwise noted, is MIT licensed. See the `LICENSE` file in this repository.
