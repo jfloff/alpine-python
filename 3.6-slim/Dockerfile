@@ -100,6 +100,7 @@ RUN set -ex ;\
     find /usr/local/lib/pyenv/versions/$PYTHON_VERSION/ -depth \( -name '*.pyo' -o -name '*.pyc' -o -name 'test' -o -name 'tests' \) -exec rm -rf '{}' + ;\
     # symlink the binaries
     ln -s /usr/local/lib/pyenv/versions/$PYTHON_VERSION/bin/* $PYTHON_PATH ;\
+    ln -s /usr/local/lib/pyenv/versions/$PYTHON_VERSION/include/python$PYTHON_MINOR_VERSION /usr/include/ ;\
     # remove build dependencies and any leftover apk cache
     apk del --no-cache --purge .build-deps ;\
     rm -rf /var/cache/apk/* ;\
