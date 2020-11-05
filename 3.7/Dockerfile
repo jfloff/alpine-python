@@ -28,6 +28,7 @@ ENV PYTHON_PATH=/usr/local/bin/ \
       libressl-dev \
       libffi-dev \
       tzdata \
+      wget \
     " \
     # PACKAGES needed to built python
     PYTHON_BUILD_PACKAGES="\
